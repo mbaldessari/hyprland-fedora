@@ -86,7 +86,24 @@ LOGS_DIR="${RESULT_DIR}/logs"
 mkdir -p "$LOCAL_REPO" "$LOGS_DIR"
 createrepo_c --quiet "$LOCAL_REPO"
 
+# ── write a mock config overlay that includes the local repo ─────────────────
+MOCK_CFG_OVERLAY="${RESULT_DIR}/hyprland-review.cfg"
+cat > "$MOCK_CFG_OVERLAY" <<EOF
+include("${MOCK_CONFIG}.cfg")
+
+config_opts['dnf.conf'] += """
+[hyprland-local]
+name=Hyprland local build repo
+baseurl=file://${LOCAL_REPO}
+enabled=1
+gpgcheck=0
+priority=1
+module_hotfixes=1
+"""
+EOF
+
 info "Mock config : ${MOCK_CONFIG}"
+info "Config overlay: ${MOCK_CFG_OVERLAY}"
 info "Results dir : ${RESULT_DIR}"
 info "Local repo  : ${LOCAL_REPO}"
 [[ -n "$SRPM_DIR" ]] && info "SRPM dir    : ${SRPM_DIR}"
@@ -179,16 +196,12 @@ for pkg in "${BUILD_ORDER[@]}"; do
     ln -sf "$SRPM_PATH" "${REVIEW_WORKDIR}/$(basename "$SRPM_PATH")"
 
     # Build the fedora-review command
+    # Use the overlay config so mock can find previously-built packages
     FR_ARGS=(
         fedora-review
         -n "$PKG_NAME"
-        --mock-config "$MOCK_CONFIG"
+        --mock-config "$MOCK_CFG_OVERLAY"
     )
-
-    # Add the local repo if it has packages
-    if [[ $(find "$LOCAL_REPO" -name '*.rpm' 2>/dev/null | head -1) ]]; then
-        FR_ARGS+=(--repo "file://${LOCAL_REPO}")
-    fi
 
     REVIEW_LOG="${LOGS_DIR}/${pkg}-review.log"
 
@@ -224,10 +237,12 @@ for pkg in "${BUILD_ORDER[@]}"; do
         ok "${pkg} — review complete"
 
         # Count PASS / FAIL / PENDING
-        PASS_N=$(grep -c '^\[x\]'  "$REVIEW_TXT" 2>/dev/null || echo 0)
-        FAIL_N=$(grep -c '^\[!\]'  "$REVIEW_TXT" 2>/dev/null || echo 0)
-        PEND_N=$(grep -c '^\[ \]'  "$REVIEW_TXT" 2>/dev/null || echo 0)
-        NA_N=$(grep -c '^\[na\]'   "$REVIEW_TXT" 2>/dev/null || echo 0)
+        # Note: grep -c outputs "0" and exits 1 when no matches; || true
+        # prevents set -e from killing the script without duplicating output
+        PASS_N=$(grep -c '^\[x\]'  "$REVIEW_TXT" 2>/dev/null) || PASS_N=0
+        FAIL_N=$(grep -c '^\[!\]'  "$REVIEW_TXT" 2>/dev/null) || FAIL_N=0
+        PEND_N=$(grep -c '^\[ \]'  "$REVIEW_TXT" 2>/dev/null) || PEND_N=0
+        NA_N=$(grep -c '^\[na\]'   "$REVIEW_TXT" 2>/dev/null) || NA_N=0
 
         echo "     ${GREEN}PASS: ${PASS_N}${RESET}  ${RED}FAIL: ${FAIL_N}${RESET}  PENDING: ${PEND_N}  N/A: ${NA_N}"
         echo "     Report: ${REVIEW_TXT}"
