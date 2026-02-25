@@ -87,9 +87,14 @@ mkdir -p "$LOCAL_REPO" "$LOGS_DIR"
 createrepo_c --quiet "$LOCAL_REPO"
 
 # ── write a mock config overlay that includes the local repo ─────────────────
+# Also install python3-dnf in the chroot: fedora-review's check plugins call
+# "dnf" inside the chroot, but F43+ only ships dnf5.
+# See: https://github.com/rpm-software-management/mock/issues/1376
 MOCK_CFG_OVERLAY="${RESULT_DIR}/hyprland-review.cfg"
 cat > "$MOCK_CFG_OVERLAY" <<EOF
 include("${MOCK_CONFIG}.cfg")
+
+config_opts['chroot_additional_packages'] = ['python3-dnf']
 
 config_opts['dnf.conf'] += """
 [hyprland-local]
