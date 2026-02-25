@@ -177,6 +177,11 @@ for pkg in "${BUILD_ORDER[@]}"; do
     PKG_RESULT="${RESULT_DIR}/${pkg}"
     mkdir -p "$PKG_RESULT"
 
+    # Clean any leftover chroot from a previous build to avoid
+    # permission/ownership collisions
+    info "  Cleaning mock chroot..."
+    mock --scrub=chroot -r "$MOCK_CFG_OVERLAY" >> "${LOGS_DIR}/${pkg}-mock-clean.log" 2>&1 || true
+
     info "  mock --rebuild (this may take a while)..."
     if ! mock -r "$MOCK_CFG_OVERLAY" \
             --resultdir="$PKG_RESULT" \

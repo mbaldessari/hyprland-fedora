@@ -192,7 +192,10 @@ for pkg in "${BUILD_ORDER[@]}"; do
     fi
 
     # ── run fedora-review in its own workdir ──────────────────────────────
+    # Remove any previous review directory so fedora-review doesn't
+    # reuse stale/failed results from a prior run
     REVIEW_WORKDIR="${RESULT_DIR}/${pkg}"
+    rm -rf "$REVIEW_WORKDIR"
     mkdir -p "$REVIEW_WORKDIR"
 
     # fedora-review -n expects <name>.spec and <name>-*.src.rpm in the cwd
@@ -209,6 +212,11 @@ for pkg in "${BUILD_ORDER[@]}"; do
     )
 
     REVIEW_LOG="${LOGS_DIR}/${pkg}-review.log"
+
+    # Clean any leftover chroot from a previous review to avoid
+    # permission/ownership collisions between builds
+    info "  Cleaning mock chroot..."
+    mock --scrub=chroot -r "$MOCK_CFG_OVERLAY" >> "${LOGS_DIR}/${pkg}-mock-clean.log" 2>&1 || true
 
     info "  Running: ${FR_ARGS[*]}"
     info "  Working directory: ${REVIEW_WORKDIR}"
