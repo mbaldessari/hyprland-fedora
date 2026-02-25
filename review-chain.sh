@@ -178,7 +178,6 @@ for pkg in "${BUILD_ORDER[@]}"; do
         fedora-review
         --srpm "$SRPM_PATH"
         --mock-config "$MOCK_CONFIG"
-        --no-colors
     )
 
     # Add the local repo if it has packages
@@ -186,24 +185,37 @@ for pkg in "${BUILD_ORDER[@]}"; do
         FR_ARGS+=(--repo "file://${LOCAL_REPO}")
     fi
 
-    info "  Running fedora-review (this may take a while)..."
-    if ! ( cd "$REVIEW_WORKDIR" && "${FR_ARGS[@]}" ) \
-            >> "${LOGS_DIR}/${pkg}-review.log" 2>&1; then
-        echo "${RED}  ✗ fedora-review failed (see ${LOGS_DIR}/${pkg}-review.log)${RESET}"
+    REVIEW_LOG="${LOGS_DIR}/${pkg}-review.log"
+
+    info "  Running: ${FR_ARGS[*]}"
+    info "  Working directory: ${REVIEW_WORKDIR}"
+    FR_RC=0
+    cd "$REVIEW_WORKDIR"
+    "${FR_ARGS[@]}" > "$REVIEW_LOG" 2>&1 || FR_RC=$?
+    cd "$SCRIPT_DIR"
+
+    if [[ $FR_RC -ne 0 ]]; then
+        echo "${RED}  ✗ fedora-review exited with code ${FR_RC}${RESET}"
+        if [[ -s "$REVIEW_LOG" ]]; then
+            echo "${RED}  Last 15 lines of log:${RESET}"
+            tail -15 "$REVIEW_LOG" | sed 's/^/    /'
+        else
+            echo "${RED}  ✗ Log file is empty — fedora-review produced no output${RESET}"
+        fi
         FAILED+=("$pkg")
         # still try to harvest RPMs for later packages
     fi
 
     # ── copy any built RPMs to local repo ─────────────────────────────────
-    # fedora-review leaves results under <workdir>/results/
-    if [[ -d "${REVIEW_WORKDIR}/results" ]]; then
-        cp -n "${REVIEW_WORKDIR}"/results/*.rpm "$LOCAL_REPO/" 2>/dev/null || true
-        createrepo_c --update --quiet "$LOCAL_REPO"
-    fi
+    # fedora-review may leave results under results/ or <pkg>/results/
+    find "$REVIEW_WORKDIR" -name '*.rpm' -not -name '*.src.rpm' \
+        -exec cp -n {} "$LOCAL_REPO/" \; 2>/dev/null || true
+    createrepo_c --update --quiet "$LOCAL_REPO"
 
     # ── show review outcome ───────────────────────────────────────────────
-    REVIEW_TXT="${REVIEW_WORKDIR}/review.txt"
-    if [[ -f "$REVIEW_TXT" ]]; then
+    # fedora-review may put review.txt in the workdir or a subdirectory
+    REVIEW_TXT=$(find "$REVIEW_WORKDIR" -name 'review.txt' -print -quit 2>/dev/null)
+    if [[ -n "$REVIEW_TXT" && -f "$REVIEW_TXT" ]]; then
         ok "${pkg} — review complete"
 
         # Count PASS / FAIL / PENDING
@@ -220,7 +232,15 @@ for pkg in "${BUILD_ORDER[@]}"; do
             grep '^\[!\]' "$REVIEW_TXT" | sed 's/^/       /'
         fi
     else
-        warn "${pkg} — no review.txt produced (see ${LOGS_DIR}/${pkg}-review.log)"
+        warn "${pkg} — no review.txt produced"
+        if [[ -s "$REVIEW_LOG" ]]; then
+            echo "     Log: ${REVIEW_LOG}"
+            echo "     Last 10 lines:"
+            tail -10 "$REVIEW_LOG" | sed 's/^/       /'
+        else
+            echo "     No log output was captured — fedora-review may have crashed immediately."
+            echo "     Try running manually:  cd ${REVIEW_WORKDIR} && ${FR_ARGS[*]}"
+        fi
     fi
 done
 
