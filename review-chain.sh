@@ -118,7 +118,7 @@ build_srpm() {
         --define "_topdir ${RESULT_DIR}/rpmbuild" \
         "$spec_file" 2>&1 | tee "${LOGS_DIR}/${pkg}-srpm.log")
 
-    echo "$output" | grep -oP '(?<=Wrote: ).*\.src\.rpm' || return 1
+    echo "$output" | grep -oP '(?<=Wrote: ).*\.src\.rpm' | head -1 || return 1
 }
 
 # ── find a pre-built SRPM ────────────────────────────────────────────────────
@@ -173,10 +173,15 @@ for pkg in "${BUILD_ORDER[@]}"; do
     REVIEW_WORKDIR="${RESULT_DIR}/${pkg}"
     mkdir -p "$REVIEW_WORKDIR"
 
+    # fedora-review -n expects <name>.spec and <name>-*.src.rpm in the cwd
+    PKG_NAME=$(rpm -qp --qf '%{NAME}' "$SRPM_PATH" 2>/dev/null)
+    ln -sf "$SPEC_FILE" "${REVIEW_WORKDIR}/${PKG_NAME}.spec"
+    ln -sf "$SRPM_PATH" "${REVIEW_WORKDIR}/$(basename "$SRPM_PATH")"
+
     # Build the fedora-review command
     FR_ARGS=(
         fedora-review
-        --srpm "$SRPM_PATH"
+        -n "$PKG_NAME"
         --mock-config "$MOCK_CONFIG"
     )
 

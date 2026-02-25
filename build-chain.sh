@@ -164,9 +164,9 @@ for pkg in "${BUILD_ORDER[@]}"; do
         --define "_sourcedir ${SPEC_DIR}" \
         --define "_srcrpmdir ${SRPMS_DIR}" \
         --define "_topdir ${RESULT_DIR}/rpmbuild" \
-        "$SPEC_FILE" 2>&1 | tee "${LOGS_DIR}/${pkg}-srpm.log" | tail -1)
+        "$SPEC_FILE" 2>&1 | tee "${LOGS_DIR}/${pkg}-srpm.log")
 
-    SRPM_PATH=$(echo "$SRPM_OUT" | grep -oP '(?<=Wrote: ).*\.src\.rpm' || true)
+    SRPM_PATH=$(echo "$SRPM_OUT" | grep -oP '(?<=Wrote: ).*\.src\.rpm' | head -1 || true)
     if [[ -z "$SRPM_PATH" || ! -f "$SRPM_PATH" ]]; then
         echo "${RED}  ✗ SRPM build failed (see ${LOGS_DIR}/${pkg}-srpm.log)${RESET}"
         FAILED+=("$pkg")
