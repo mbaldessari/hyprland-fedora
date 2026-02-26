@@ -36,36 +36,26 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# ── Topologically sorted build order ─────────────────────────────────────────
-# Level 1: no internal deps
-# Level 2: depend on level 1
-# Level 3: depend on levels 1–2
-# Level 4: depend on level 3
-# Level 5: depends on nearly everything
 BUILD_ORDER=(
-    # Level 1
     hyprutils
     glaze
     hyprwayland-scanner
     hyprland-protocols
-    # Level 2
     hyprlang
     hyprwire
     hyprgraphics
     aquamarine
-    # Level 3
     hyprcursor
     hypridle
     hyprsunset
     hyprlock
     xdg-desktop-portal-hyprland
     hyprtoolkit
-    # Level 4
     hyprpaper
     hyprland-guiutils
     hyprlauncher
-    # Level 5
     hyprland
+    hyprland-plugins
 )
 
 # ── colours ───────────────────────────────────────────────────────────────────
