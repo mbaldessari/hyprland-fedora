@@ -3,7 +3,9 @@ Version:        0.5.3
 Release:        %autorelease
 Summary:        A modern C++ Wayland-native GUI toolkit
 
-License:        BSD-3-Clause
+# hyprtoolkit: BSD-3-Clause
+# protocols/wlr-layer-shell-unstable-v1.xml: HPND-sell-variant
+License:        BSD-3-Clause AND HPND-sell-variant
 URL:            https://github.com/hyprwm/hyprtoolkit
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 Patch0:         compile-fix.patch

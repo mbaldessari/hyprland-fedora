@@ -4,10 +4,13 @@ Release:        %autorelease
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
 # hyprland: BSD-3-Clause
-# protocols/ext-workspace-unstable-v1.xml: HPND-sell-variant
+# protocols/kde-server-decoration.xml: LGPL-2.1-or-later
+# protocols/wayland-drm.xml: HPND-sell-variant
+# protocols/wlr-data-control-unstable-v1.xml: HPND-sell-variant
 # protocols/wlr-foreign-toplevel-management-unstable-v1.xml: HPND-sell-variant
+# protocols/wlr-gamma-control-unstable-v1.xml: HPND-sell-variant
 # protocols/wlr-layer-shell-unstable-v1.xml: HPND-sell-variant
-# protocols/idle.xml: LGPL-2.1-or-later
+# protocols/wlr-output-management-unstable-v1.xml: HPND-sell-variant
 License:        BSD-3-Clause AND HPND-sell-variant AND LGPL-2.1-or-later
 URL:            https://github.com/hyprwm/Hyprland
 Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz

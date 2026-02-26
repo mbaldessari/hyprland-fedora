@@ -4,7 +4,10 @@ Version:        1.3.11
 Release:        %autorelease -b3
 Summary:        XDG Desktop Portal backend for Hyprland
 
-License:        BSD-3-Clause
+# xdg-desktop-portal-hyprland: BSD-3-Clause
+# protocols/wlr-foreign-toplevel-management-unstable-v1.xml: HPND-sell-variant
+# protocols/wlr-screencopy-unstable-v1.xml: MIT
+License:        BSD-3-Clause AND HPND-sell-variant AND MIT
 URL:            https://github.com/hyprwm/xdg-desktop-portal-hyprland
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
