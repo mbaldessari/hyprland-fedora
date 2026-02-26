@@ -53,10 +53,8 @@ BUILD_ORDER=(
     hyprwire
     hyprgraphics
     aquamarine
-    hyprland-qtutils
     # Level 3
     hyprcursor
-    hyprland-qt-support
     hypridle
     hyprsunset
     hyprlock
