@@ -12,18 +12,11 @@
                 xtra-dispatchers
 }
 
-%if !%{defined build_for}
-%global build_for release
-%endif
+# Fallback if hyprland-devel macros are not installed (e.g. spectool)
+%{!?_hyprland_version:%define _hyprland_version 0.53.3}
 
-%define pluginsmeta %{lua:
-rpm.define("pluginsmetaname hyprland-plugins")
-rpm.define("hyprlandpkg hyprland")
-}
 
-%pluginsmeta
-
-Name:           %{pluginsmetaname}
+Name:           hyprland-plugins
 Version:        0.53.0
 Release:        %autorelease
 Summary:        Official plugins for Hyprland
@@ -34,12 +27,12 @@ Source:         %{url}/archive/refs/tags/v%{version}.tar.gz
 
 BuildRequires:  gcc-c++
 BuildRequires:  meson
-BuildRequires:  %{hyprlandpkg}-devel
+BuildRequires:  hyprland-devel >= %{version}
 
-Requires:       %{hyprlandpkg} = %_hyprland_version
+Requires:       hyprland = %_hyprland_version
 
 # print Recommends: for each plugin
-%{lua:for w in rpm.expand('%plugins'):gmatch("%S+") do print("Recommends: hyprland-plugin-"..w..(rpm.expand("%build_for") == "git" and "-git" or "")..'\n') end}
+%{lua:for w in rpm.expand('%plugins'):gmatch("%S+") do print("Recommends: hyprland-plugin-"..w..'\n') end}
 
 %description
 A collection of official plugins for the Hyprland compositor. Includes
@@ -47,12 +40,12 @@ window decoration enhancements, visual effects, layout extensions, and
 additional dispatchers. Each plugin is packaged separately so you can
 install only the ones you need.
 
-%define _package() \%package -n hyprland-plugin-%1%{?pluginssuffix:%{pluginssuffix}}\
-Summary:       %1 plugin for %{hyprlandpkg}\
-Requires:      %{hyprlandpkg} = %_hyprland_version\
-\%description  -n hyprland-plugin-%1%{?pluginssuffix:%{pluginssuffix}}\
-\%1 plugin for %{hyprlandpkg}.\
-\%files -n     hyprland-plugin-%1%{?pluginssuffix:%{pluginssuffix}}\
+%define _package() \%package -n hyprland-plugin-%1\
+Summary:       %1 plugin for Hyprland\
+Requires:      hyprland = %_hyprland_version\
+\%description  -n hyprland-plugin-%1\
+\%1 plugin for Hyprland.\
+\%files -n     hyprland-plugin-%1\
 \%%license LICENSE\
 \%dir %{_libdir}/hyprland\
 \%{_libdir}/hyprland/lib%1.so\
