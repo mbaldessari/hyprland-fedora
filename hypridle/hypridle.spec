@@ -8,6 +8,7 @@ License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hypridle
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 Source1:        https://github.com/Kistler-Group/sdbus-cpp/archive/v%{sdbus_version}/sdbus-%{sdbus_version}.tar.gz
+Source2:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -26,7 +27,11 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols)
 
 %description
-%{summary}.
+Hyprland's idle daemon, based on the ext-idle-notify-v1 Wayland protocol.
+It supports D-Bus loginctl commands (lock, unlock, before-sleep) and D-Bus
+inhibit (used by e.g. Firefox and Steam). Users can configure timeout-based
+actions through listeners that execute commands when the system becomes idle
+and when activity resumes.
 
 %prep
 %autosetup -p1 -a1

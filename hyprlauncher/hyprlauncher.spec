@@ -6,7 +6,8 @@ Summary:        A multipurpose and versatile launcher / picker for Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprlauncher
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Patch0:		compile-fix.patch
+Source1:        %{name}.rpmlintrc
+Patch0:         compile-fix.patch
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
 
@@ -26,7 +27,10 @@ BuildRequires:  pkgconfig(xkbcommon)
 Requires:       wl-clipboard
 
 %description
-%{summary}.
+A multipurpose and versatile launcher and picker for Hyprland, built on
+hyprtoolkit. It provides application launching, file picking, and calculator
+functionality powered by libqalculate. Clipboard integration is handled
+through wl-clipboard.
 
 %prep
 %autosetup -p1

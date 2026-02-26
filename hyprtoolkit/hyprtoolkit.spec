@@ -6,7 +6,8 @@ Summary:        A modern C++ Wayland-native GUI toolkit
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprtoolkit
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Patch0:		compile-fix.patch
+Source1:        %{name}.rpmlintrc
+Patch0:         compile-fix.patch
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
 
@@ -32,7 +33,10 @@ BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  pkgconfig(xkbcommon)
 
 %description
-%{summary}.
+A small, simple, and modern C++ Wayland-native GUI toolkit for making GUI
+applications. Key goals include a straightforward C++ API, smooth animations,
+easy usage, and simple system theming. It is designed specifically for
+Wayland and the Hyprland ecosystem.
 
 %package        devel
 Summary:        Development files for %{name}
@@ -62,6 +66,7 @@ Development files for %{name}.
 %{_libdir}/lib%{name}.so.5
 
 %files devel
+%doc README.md
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}.so
 %{_libdir}/pkgconfig/%{name}.pc

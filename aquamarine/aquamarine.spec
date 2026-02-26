@@ -5,6 +5,7 @@ Summary:        A very light linux rendering backend library
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/aquamarine
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -27,7 +28,10 @@ BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols)
 
 %description
-%{summary}.
+A very light Linux rendering backend library. It provides basic abstractions
+for an application to render on a Wayland session (in a window) or a native
+DRM session. Aquamarine is agnostic of the rendering API (Vulkan/OpenGL) and
+designed to be lightweight, performant, and minimal.
 
 %package        devel
 Summary:        Development files for %{name}
@@ -52,6 +56,7 @@ Development files for %{name}.
 %{_libdir}/lib%{name}.so.9
 
 %files devel
+%doc README.md
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}.so
 %{_libdir}/pkgconfig/%{name}.pc

@@ -4,12 +4,13 @@ Name:           xdg-desktop-portal-hyprland
 Epoch:          1
 Version:        1.3.11
 Release:        %autorelease -b3
-Summary:        xdg-desktop-portal backend for hyprland
+Summary:        XDG Desktop Portal backend for Hyprland
 
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/xdg-desktop-portal-hyprland
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source:         https://github.com/Kistler-Group/sdbus-cpp/archive/v%{sdbus_version}/sdbus-%{sdbus_version}.tar.gz
+Source1:        https://github.com/Kistler-Group/sdbus-cpp/archive/v%{sdbus_version}/sdbus-%{sdbus_version}.tar.gz
+Source2:        %{name}.rpmlintrc
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
@@ -45,7 +46,11 @@ Supplements:    hyprland-git
 Provides:       bundled(sdbus-cpp) = %{sdbus_version}
 
 %description
-%{summary}.
+An XDG Desktop Portal backend for Hyprland. It allows applications to interact
+with the Hyprland compositor through the standardized XDG Desktop Portal
+framework, enabling sandboxed applications (such as Flatpaks) to properly
+integrate with the desktop environment by providing portal services such as
+screen sharing and other system services.
 
 
 %prep

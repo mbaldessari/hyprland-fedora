@@ -35,6 +35,7 @@ Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 %endif
 Source4:        macros.hyprland
 Source5:        https://github.com/xkbcommon/libxkbcommon/archive/xkbcommon-%{libxkbcommon_version}/libxkbcommon-%{libxkbcommon_version}.tar.gz
+Source6:        %{name}.rpmlintrc
 
 %{lua:
 hyprdeps = {
@@ -171,10 +172,13 @@ very flexible IPC model allowing for a lot of customization, a powerful
 plugin system and more.
 
 %package        uwsm
-Summary:        Files for a uwsm-managed session
+Summary:        UWSM session integration for Hyprland
+BuildArch:      noarch
 Requires:       uwsm
 %description    uwsm
-Files for a uwsm-managed session.
+Wayland session desktop entry for launching Hyprland through the Universal
+Wayland Session Manager (uwsm). Install this package to start Hyprland
+as a properly managed systemd user session from your display manager.
 
 %package        devel
 Summary:        Header and protocol files for %{name}
@@ -197,7 +201,10 @@ Requires:       git-core
 Requires:       pkgconfig(xkbcommon)
 
 %description    devel
-%{summary}.
+Development files for building Hyprland plugins and applications that
+interact with the compositor. Includes protocol definitions, header files,
+and pkgconfig integration. Also provides an RPM macro for the Hyprland
+version to simplify plugin packaging.
 
 
 %prep

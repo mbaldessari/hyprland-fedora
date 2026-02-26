@@ -1,0 +1,8 @@
+# "hyprland" is a proper name, not a misspelling
+addFilter("spelling-error.*hyprland")
+# No man page provided by upstream
+addFilter("no-manual-page-for-binary")
+# No test suite available
+addFilter("no-%check-section")
+# Upstream installs header in both locations intentionally
+addFilter("files-duplicate")

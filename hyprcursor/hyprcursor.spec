@@ -1,11 +1,12 @@
 Name:           hyprcursor
 Version:        0.1.13
 Release:        %autorelease -b2
-Summary:        The hyprland cursor format, library and utilities
+Summary:        The Hyprland cursor format, library and utilities
 
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprcursor
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -20,7 +21,11 @@ BuildRequires:  pkgconfig(libzip)
 BuildRequires:  pkgconfig(tomlplusplus)
 
 %description
-%{summary}.
+The Hyprland cursor format, library, and utilities. Hyprcursor addresses
+limitations of the XCursor format by offering automatic scaling with
+configurable per-cursor methods, SVG (vector) cursor support, and
+significantly better space efficiency. Provides a shared library
+(libhyprcursor) and the hyprcursor-util conversion tool.
 
 %package        devel
 Summary:        Development files for %{name}
@@ -46,6 +51,7 @@ Development files for %{name}.
 %{_libdir}/lib%{name}.so.0
 
 %files devel
+%doc README.md
 %{_includedir}/%{name}.hpp
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}.so

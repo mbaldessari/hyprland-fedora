@@ -1,10 +1,11 @@
 Name:           hyprland-qt-support
 Version:        0.1.0
 Release:        %autorelease -b10
-Summary:        A Qt6 Qml style provider for hypr* apps
+Summary:        Qt6 QML style provider for Hyprland applications
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprland-qt-support
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.rpmlintrc
 Patch:          cmake.patch
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
@@ -21,7 +22,9 @@ BuildRequires:  cmake(Qt6Qml)
 BuildRequires:  pkgconfig(hyprlang)
 
 %description
-%{summary}.
+A Qt6 QML style provider for Hyprland applications. It allows users to apply
+Hyprland-themed styling to Qt6/QML applications, enabling visual consistency
+between Qt applications and the Hyprland window manager environment.
 
 %prep
 %autosetup -p1

@@ -6,6 +6,7 @@ Summary:        Hyprland utilities library used across the ecosystem
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprutils
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -15,7 +16,9 @@ BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(pixman-1)
 
 %description
-%{summary}.
+A small C++ library providing common utilities used across the Hyprland
+ecosystem. It serves as a foundational library with shared functionality
+for various Hyprland projects, designed to be lightweight and reusable.
 
 %package        devel
 Summary:        Development files for %{name}
@@ -43,6 +46,7 @@ Development files for %{name}.
 %{_libdir}/lib%{name}.so.10
 
 %files devel
+%doc README.md
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}.so
 %{_libdir}/pkgconfig/%{name}.pc

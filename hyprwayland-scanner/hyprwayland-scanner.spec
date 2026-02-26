@@ -6,6 +6,7 @@ Summary:        A Hyprland implementation of wayland-scanner, in and for C++
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprwayland-scanner
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -15,7 +16,9 @@ BuildRequires:  cmake(pugixml)
 BuildRequires:  gcc-c++
 
 %description
-%{summary}.
+A Hyprland implementation of wayland-scanner, in and for C++. It generates
+RAII-ready, modern C++ bindings for Wayland protocols, for either servers or
+clients. Requires a compiler with C++23 support.
 
 %package        devel
 Summary:        A Hyprland implementation of wayland-scanner, in and for C++

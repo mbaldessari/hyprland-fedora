@@ -1,0 +1,2 @@
+# No test suite available
+addFilter("no-%check-section")

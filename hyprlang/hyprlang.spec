@@ -15,7 +15,10 @@ BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(hyprutils)
 
 %description
-%{summary}.
+The official implementation library for the hypr configuration language, an
+efficient yet easy to work with configuration language for Linux applications.
+It supports colors, vectors, integers, floats, strings, variables, nested
+categories, and custom keyword handlers.
 
 %package        devel
 Summary:        Development files for %{name}
@@ -44,6 +47,7 @@ sed 's/.*/%{version}/' -i VERSION
 %{_libdir}/libhyprlang.so.%{version}
 
 %files devel
+%doc README.md
 %{_includedir}/hyprlang.hpp
 %{_libdir}/libhyprlang.so
 %{_libdir}/pkgconfig/hyprlang.pc

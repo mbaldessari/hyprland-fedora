@@ -1,0 +1,2 @@
+# Protocol package, nothing to test
+addFilter("no-%check-section")

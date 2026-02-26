@@ -7,7 +7,8 @@ Summary:        Hyprland's GPU-accelerated screen locking utility
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprlock
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source:         https://github.com/Kistler-Group/sdbus-cpp/archive/v%{sdbus_version}/sdbus-%{sdbus_version}.tar.gz
+Source1:        https://github.com/Kistler-Group/sdbus-cpp/archive/v%{sdbus_version}/sdbus-%{sdbus_version}.tar.gz
+Source2:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -36,7 +37,11 @@ BuildRequires:  pkgconfig(xkbcommon)
 Provides:       bundled(sdbus-cpp) = %{sdbus_version}
 
 %description
-%{summary}.
+Hyprland's simple, yet multi-threaded and GPU-accelerated screen locking
+utility. It provides visual features including blurred screenshot backgrounds,
+gradient borders, animations, and shadows. Supports the ext-session-lock
+protocol, fractional scaling, and native fingerprint authentication through
+libfprint.
 
 %prep
 %autosetup -p1

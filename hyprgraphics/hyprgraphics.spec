@@ -1,11 +1,12 @@
 Name:           hyprgraphics
 Version:        0.5.0
 Release:        %autorelease -b1
-Summary:        Hyprland graphics / resource utilities
+Summary:        Hyprland graphics and image utilities library
 
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprgraphics
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -30,7 +31,9 @@ BuildRequires:  pkgconfig(libheif)
 BuildRequires:  pkgconfig(librsvg-2.0)
 
 %description
-%{summary}.
+A small C++ library with graphics and image utilities used across the Hyprland
+ecosystem. It provides image loading and manipulation support for multiple
+formats including JPEG, PNG, WebP, SVG, HEIF, and JPEG XL.
 
 %package        devel
 Summary:        Development files for %{name}
@@ -60,6 +63,7 @@ Development files for %{name}.
 %{_libdir}/lib%{name}.so.%{version}
 
 %files devel
+%doc README.md
 %{_includedir}/%{name}/
 %{_libdir}/lib%{name}.so
 %{_libdir}/pkgconfig/%{name}.pc

@@ -6,6 +6,7 @@ Summary:        A fast and consistent wire protocol for IPC
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprwire
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -18,7 +19,10 @@ BuildRequires:  pkgconfig(libffi)
 BuildRequires:  pkgconfig(pugixml)
 
 %description
-%{summary}.
+A fast and consistent wire protocol for IPC, heavily inspired by Wayland.
+Hyprwire is designed to be strict (both sides must agree on the protocol),
+fast (simple initial handshakes for quick information exchange), and simple
+to use (modern C++ API abstracting memory-sensitive operations).
 
 %package        devel
 Summary:        Development files for %{name}
@@ -45,6 +49,7 @@ Development files for %{name}.
 %{_libdir}/lib%{name}.so.3
 
 %files devel
+%doc README.md
 %{_bindir}/%{name}-scanner
 %{_includedir}/%{name}/
 %{_libdir}/cmake/%{name}-scanner/

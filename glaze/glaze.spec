@@ -8,12 +8,18 @@ Summary:        Extremely fast, in memory, JSON and interface library
 License:        MIT
 URL:            https://github.com/stephenberry/glaze
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.rpmlintrc
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
 
 %description
-%{summary}.
+Glaze is one of the fastest JSON libraries in the world. It reads and writes
+from object memory, simplifying interfaces and offering exceptional
+performance. It provides automatic compile-time reflection for C++ structs
+without requiring metadata or macros. Glaze is a header-only library
+supporting multiple serialization formats including JSON, BEVE, CBOR, CSV,
+and MessagePack.
 
 %package        devel
 Summary:        Development files for %{name}

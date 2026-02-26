@@ -1,0 +1,6 @@
+# "Hyprland" is a proper name, not a misspelling
+addFilter("spelling-error.*Hyprland")
+# No man page provided by upstream
+addFilter("no-manual-page-for-binary")
+# No test suite available
+addFilter("no-%check-section")

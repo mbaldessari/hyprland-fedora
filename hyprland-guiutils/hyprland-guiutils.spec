@@ -1,10 +1,11 @@
 Name:           hyprland-guiutils
 Version:        0.2.1
 Release:        %autorelease -b1
-Summary:        Hyprland utility apps
+Summary:        Hyprland GUI utility applications
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprland-guiutils
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -25,13 +26,15 @@ BuildRequires:  pkgconfig(xkbcommon)
 
 BuildRequires:  libdrm-devel
 BuildRequires:  pixman-devel
-#BuildRequires:  wayland-devel
 
-#Requires:       hyprland-qt-support%{?_isa}
-Obsoletes:	hyprland-qtutils
+Obsoletes:      hyprland-qtutils < 0.2.0
 
 %description
-%{summary}.
+A collection of GUI utility applications for the Hyprland ecosystem, built
+on hyprtoolkit. Includes hyprland-dialog for displaying dialog boxes,
+hyprland-run as a launcher, hyprland-welcome for the welcome screen,
+hyprland-donate-screen, and hyprland-update-screen. This package supersedes
+hyprland-qtutils.
 
 %prep
 %autosetup -p1
