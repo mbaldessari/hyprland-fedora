@@ -4,25 +4,20 @@
 %global commits_count 6689
 %global commit_date Sat Dec 06 00:42:26 2025
 
-%global udis86_commit 5336633af70f3917760a6d441ff02d93477b0c86
-%global udis86_shortcommit %(c=%{udis86_commit}; echo ${c:0:7})
-
 Name:           hyprland
 Version:        0.53.3%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
 Release:        %autorelease -b2
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
 # hyprland: BSD-3-Clause
-# subproject/udis86: BSD-2-Clause
 # protocols/ext-workspace-unstable-v1.xml: HPND-sell-variant
 # protocols/wlr-foreign-toplevel-management-unstable-v1.xml: HPND-sell-variant
 # protocols/wlr-layer-shell-unstable-v1.xml: HPND-sell-variant
 # protocols/idle.xml: LGPL-2.1-or-later
-License:        BSD-3-Clause AND BSD-2-Clause AND HPND-sell-variant AND LGPL-2.1-or-later
+License:        BSD-3-Clause AND HPND-sell-variant AND LGPL-2.1-or-later
 URL:            https://github.com/hyprwm/Hyprland
 %if 0%{?bumpver}
 Source0:        %{url}/archive/%{hyprland_commit}/%{name}-%{hyprland_shortcommit}.tar.gz
-Source3:        https://github.com/canihavesomecoffee/udis86/archive/%{udis86_commit}/udis86-%{udis86_shortcommit}.tar.gz
 %else
 Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 %endif
@@ -84,6 +79,7 @@ hyprdeps = {
     "pkgconfig(xcursor)",
     "pkgconfig(xkbcommon)",
     "pkgconfig(xwayland)",
+    "udis86-devel",
     }
 }
 
@@ -100,10 +96,6 @@ BuildRequires:  gcc-toolset-15
 BuildRequires:  gcc-toolset-15-gcc-c++
 BuildRequires:  gcc-toolset-15-annobin-plugin-gcc
 %endif
-
-# udis86 is packaged in Fedora, but the copy bundled here is actually a
-# modified fork.
-Provides:       bundled(udis86) = 1.7.2^1.%{udis86_shortcommit}
 
 Requires:       xorg-x11-server-Xwayland%{?_isa}
 Requires:       aquamarine%{?_isa} >= 0.9.2
@@ -162,10 +154,9 @@ version to simplify plugin packaging.
 %prep
 %autosetup -n %{?bumpver:Hyprland-%{hyprland_commit}} %{!?bumpver:hyprland-source} -N
 
-rm -rf subprojects/hyprland-protocols
+rm -rf subprojects/hyprland-protocols subprojects/udis86
 
 %if 0%{?bumpver}
-tar -xf %{SOURCE3} -C subprojects/udis86 --strip=1
 sed -e '/GIT_COMMIT_HASH/s/unknown/%{hyprland_commit}/' \
     -e '/GIT_BRANCH/s/unknown/main/' \
     -e '/GIT_COMMIT_DATE/s/unknown/%{commit_date}/' \
@@ -174,8 +165,6 @@ sed -e '/GIT_COMMIT_HASH/s/unknown/%{hyprland_commit}/' \
     -e '/GIT_COMMITS/s/0/%{commits_count}/' \
     -i CMakeLists.txt
 %endif
-
-cp -p subprojects/udis86/LICENSE LICENSE-udis86
 
 sed -i \
   -e "s|@@HYPRLAND_VERSION@@|%{version}|g" \
@@ -207,7 +196,7 @@ install -Dpm644 %{SOURCE4} -t %{buildroot}%{_rpmconfigdir}/macros.d
 
 
 %files
-%license LICENSE LICENSE-udis86
+%license LICENSE
 %{_bindir}/[Hh]yprland
 %{_bindir}/hyprctl
 %{_bindir}/hyprpm
