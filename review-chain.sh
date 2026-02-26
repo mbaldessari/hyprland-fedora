@@ -75,6 +75,13 @@ ok()    { echo "${BOLD}${GREEN} ✓  $*${RESET}"; }
 warn()  { echo "${BOLD}${YELLOW} ⚠  $*${RESET}"; }
 die()   { echo "${BOLD}${RED}ERROR: $*${RESET}" >&2; exit 1; }
 
+fmt_duration() {
+    local secs=$1
+    local m=$((secs / 60)) s=$((secs % 60))
+    if (( m > 0 )); then printf '%dm %ds' "$m" "$s"
+    else printf '%ds' "$s"; fi
+}
+
 # ── sanity checks ─────────────────────────────────────────────────────────────
 for cmd in fedora-review rpmbuild spectool createrepo_c; do
     command -v "$cmd" &>/dev/null || die "$cmd is not installed"
@@ -153,6 +160,7 @@ find_srpm() {
 TOTAL=${#BUILD_ORDER[@]}
 REVIEWED=0
 FAILED=()
+CHAIN_START=$(date +%s)
 
 for pkg in "${BUILD_ORDER[@]}"; do
     if $SKIPPING; then
@@ -166,6 +174,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
 
     REVIEWED=$((REVIEWED + 1))
     SPEC_FILE="${SCRIPT_DIR}/${pkg}/${pkg}.spec"
+    PKG_START=$(date +%s)
 
     echo
     info "[${REVIEWED}/${TOTAL}] Reviewing ${pkg}"
@@ -186,7 +195,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
     fi
 
     if [[ -z "$SRPM_PATH" || ! -f "$SRPM_PATH" ]]; then
-        echo "${RED}  ✗ Could not obtain SRPM (see ${LOGS_DIR}/${pkg}-srpm.log)${RESET}"
+        echo "${RED}  ✗ Could not obtain SRPM (see ${LOGS_DIR}/${pkg}-srpm.log)${RESET} [$(fmt_duration $(($(date +%s) - PKG_START)))]"
         FAILED+=("$pkg")
         continue
     fi
@@ -226,7 +235,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
     cd "$SCRIPT_DIR"
 
     if [[ $FR_RC -ne 0 ]]; then
-        echo "${RED}  ✗ fedora-review exited with code ${FR_RC}${RESET}"
+        echo "${RED}  ✗ fedora-review exited with code ${FR_RC}${RESET} [$(fmt_duration $(($(date +%s) - PKG_START)))]"
         if [[ -s "$REVIEW_LOG" ]]; then
             echo "${RED}  Last 15 lines of log:${RESET}"
             tail -15 "$REVIEW_LOG" | sed 's/^/    /'
@@ -247,7 +256,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
     # fedora-review may put review.txt in the workdir or a subdirectory
     REVIEW_TXT=$(find "$REVIEW_WORKDIR" -name 'review.txt' -print -quit 2>/dev/null)
     if [[ -n "$REVIEW_TXT" && -f "$REVIEW_TXT" ]]; then
-        ok "${pkg} — review complete"
+        ok "${pkg} — review complete [$(fmt_duration $(($(date +%s) - PKG_START)))]"
 
         # Count PASS / FAIL / PENDING
         # Note: grep -c outputs "0" and exits 1 when no matches; || true
@@ -265,7 +274,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
             grep '^\[!\]' "$REVIEW_TXT" | sed 's/^/       /'
         fi
     else
-        warn "${pkg} — no review.txt produced"
+        warn "${pkg} — no review.txt produced [$(fmt_duration $(($(date +%s) - PKG_START)))]"
         if [[ -s "$REVIEW_LOG" ]]; then
             echo "     Log: ${REVIEW_LOG}"
             echo "     Last 10 lines:"
@@ -278,8 +287,11 @@ for pkg in "${BUILD_ORDER[@]}"; do
 done
 
 # ── summary ───────────────────────────────────────────────────────────────────
+CHAIN_ELAPSED=$(( $(date +%s) - CHAIN_START ))
+
 echo
 echo "═══════════════════════════════════════════════════════════════"
+info "Total elapsed time: $(fmt_duration $CHAIN_ELAPSED)"
 info "Review reports are in: ${RESULT_DIR}/<package>/review.txt"
 echo
 

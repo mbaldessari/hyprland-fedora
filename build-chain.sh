@@ -81,6 +81,13 @@ info()  { echo "${BOLD}${CYAN}==> $*${RESET}"; }
 ok()    { echo "${BOLD}${GREEN} ✓  $*${RESET}"; }
 die()   { echo "${BOLD}${RED}ERROR: $*${RESET}" >&2; exit 1; }
 
+fmt_duration() {
+    local secs=$1
+    local m=$((secs / 60)) s=$((secs % 60))
+    if (( m > 0 )); then printf '%dm %ds' "$m" "$s"
+    else printf '%ds' "$s"; fi
+}
+
 # ── sanity checks ─────────────────────────────────────────────────────────────
 for cmd in mock rpmbuild spectool createrepo_c; do
     command -v "$cmd" &>/dev/null || die "$cmd is not installed"
@@ -126,6 +133,7 @@ fi
 TOTAL=${#BUILD_ORDER[@]}
 BUILT=0
 FAILED=()
+CHAIN_START=$(date +%s)
 
 for pkg in "${BUILD_ORDER[@]}"; do
     # Skip until we reach the start-from package
@@ -142,6 +150,8 @@ for pkg in "${BUILD_ORDER[@]}"; do
     SPEC_DIR="${SCRIPT_DIR}/${pkg}"
     SPEC_FILE="${SPEC_DIR}/${pkg}.spec"
 
+    PKG_START=$(date +%s)
+
     echo
     info "[${BUILT}/${TOTAL}] Building ${pkg}"
 
@@ -153,7 +163,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
     info "  Downloading sources..."
     if ! spectool -g -C "$SPEC_DIR" "$SPEC_FILE" \
             >> "${LOGS_DIR}/${pkg}-spectool.log" 2>&1; then
-        echo "${RED}  ✗ spectool failed (see ${LOGS_DIR}/${pkg}-spectool.log)${RESET}"
+        echo "${RED}  ✗ spectool failed (see ${LOGS_DIR}/${pkg}-spectool.log)${RESET} [$(fmt_duration $(($(date +%s) - PKG_START)))]"
         FAILED+=("$pkg")
         continue
     fi
@@ -168,7 +178,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
 
     SRPM_PATH=$(echo "$SRPM_OUT" | grep -oP '(?<=Wrote: ).*\.src\.rpm' | head -1 || true)
     if [[ -z "$SRPM_PATH" || ! -f "$SRPM_PATH" ]]; then
-        echo "${RED}  ✗ SRPM build failed (see ${LOGS_DIR}/${pkg}-srpm.log)${RESET}"
+        echo "${RED}  ✗ SRPM build failed (see ${LOGS_DIR}/${pkg}-srpm.log)${RESET} [$(fmt_duration $(($(date +%s) - PKG_START)))]"
         FAILED+=("$pkg")
         continue
     fi
@@ -187,7 +197,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
             --resultdir="$PKG_RESULT" \
             --rebuild "$SRPM_PATH" \
             >> "${LOGS_DIR}/${pkg}-mock.log" 2>&1; then
-        echo "${RED}  ✗ mock build failed (see ${LOGS_DIR}/${pkg}-mock.log)${RESET}"
+        echo "${RED}  ✗ mock build failed (see ${LOGS_DIR}/${pkg}-mock.log)${RESET} [$(fmt_duration $(($(date +%s) - PKG_START)))]"
         FAILED+=("$pkg")
         continue
     fi
@@ -196,12 +206,15 @@ for pkg in "${BUILD_ORDER[@]}"; do
     cp -n "$PKG_RESULT"/*.rpm "$LOCAL_REPO/" 2>/dev/null || true
     createrepo_c --update --quiet "$LOCAL_REPO"
 
-    ok "${pkg} built successfully"
+    ok "${pkg} built successfully [$(fmt_duration $(($(date +%s) - PKG_START)))]"
 done
 
 # ── summary ───────────────────────────────────────────────────────────────────
+CHAIN_ELAPSED=$(( $(date +%s) - CHAIN_START ))
+
 echo
 echo "═══════════════════════════════════════════════════════════════"
+info "Total elapsed time: $(fmt_duration $CHAIN_ELAPSED)"
 if [[ ${#FAILED[@]} -eq 0 ]]; then
     ok "All packages built successfully!"
 else
