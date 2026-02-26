@@ -1,21 +1,67 @@
 [TODO]
 
-- Start going through fedora reviews of each package
+- Fedora Review Status                               - Version - Wanted - Maintainer
+
+  1. hyprutils                   -> OK (MAINTAINED?) - 0.7.1   - 0.11.0 - Jannik Müller
+  2. glaze                       -> OK (NEW)         - *       - 7.0.2  - *
+  3. hyprwayland-scanner         -> OK (MAINTAINED?) - 0.4.2   - 0.4.5  - Jannik Müller
+  4. hyprland-protocols          -> OK (MAINTAINED?) - 0.4.0   - 0.7.0  - Jannik Müller
+  5. hyprlang                    -> OK (MAINTAINED?) - 0.6.4   - 0.6.8  - Sandipan Roy
+  6. hyprwire                    -> OK (NEW)         - *       - 0.3.0  - *
+  7. hyprgraphics                -> OK (MAINTAINED?) - 0.1.5   - 0.5.0  - Sandipan Roy
+  8. aquamarine                  -> OK (ORPHANED)    - *       - 0.10.0 - Jiri Kyjovsky
+  9. hyprcursor                  -> OK (MAINTAINED?) - 0.1.11  - 0.1.13 - Jannik Müller
+ 11. hypridle (*)                -> OK (ORPHANED)    - *       - 0.1.7  - Jiri Kyjovsky
+ 12. hyprsunset (*)              -> OK (NEW)         - *       - 0.3.3  - *
+ 13. hyprlock                    -> (ORPHANED)       - *       - 0.9.2  - Jiri Kyjovsky
+ 14. xdg-desktop-portal-hyprland -> (ORPHANED)       - *       - 1.3.11 - *
+ 15. hyprtoolkit                 -> (NEW)            - *       - 0.5.3  - *
+ 16. hyprpaper                   -> (ORPHANED)       - *       - 0.8.3  - *
+ 17. hyprland-guiutils           -> (NEW)            - *       - 0.2.1  - *
+ 18. hyprlauncher                -> (NEW)            - *       - 0.1.5  - *
+ 19. hyprland                    -> (ORPHANED)       - *       - 0.53.3 - Jiri Kyjovsky
+ 20. hyprland-plugins            -> (NEW)            - *       - 0.53.0 - *
+
+ - Flagged issues
+
+   - 11. hypridle
+     systemd_user_preun flagged issue can probably be ignored?
+       
+   - 12. hyprsunset
+     systemd_user_preun flagged issue can probably be ignored?
+
+   - 14. xdg-desktop-portal-hyprland
+     systemd_user_preun flagged issue can probably be ignored?
+
+   - 16. hyprpaper
+
+     systemd_user_preun flagged issue can probably be ignored?
+
+- Test hyprland-plugins on my workstation
+
 - Not sure how relevant this is for the hyprland plugins loading.
-  We currently use udis86 1.7.2 from https://github.com/vmt/udis86. debian and ubuntu have moved on to a more popular fork
-  (which was what was bundled). Maybe we can file a BZ and ask:
+  We currently use udis86 1.7.2 from https://github.com/vmt/udis86. debian and
+  ubuntu have moved on to a more popular fork (which was what was bundled).
+  Maybe we can file a BZ and ask:
   
   ```
-  Currently the package is pointing to https://github.com/vmt/udis86 which has not been touched in 12 years or so.
+  Currently the package is pointing to https://github.com/vmt/udis86 which has
+  not been touched in 12 years or so.
 
-  Would it be possible to switch to a more maintained fork (which is also not crazy active, but seems to be relatively popular): https://github.com/canihavesomecoffee/udis86 (cmake, pkg-config, library support, etc) ?
+  Would it be possible to switch to a more maintained fork (which is also not
+  crazy active, but seems to be relatively popular):
+  https://github.com/canihavesomecoffee/udis86 (cmake, pkg-config, library
+  support, etc) ?
 
   Debian & Ubuntu already switched to that fork:
   https://packages.debian.org/sid/libudis86-0
   ```
-- Package hyprland-plugins (maybe separate some or each plugin into its own subrpm)
+
+- Investigate missing %check sections in all packages. Is there any form of
+  unit/integration testing that we could run?
 
 [DONE]
 
 - Do a rawhide build-chain run
 - Most unbundling is done
+- Package hyprland-plugins
