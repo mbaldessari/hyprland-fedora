@@ -67,7 +67,7 @@ BUILD_ORDER=(
     hyprland-guiutils
     hyprlauncher
     # Level 5
-    hyprland-git
+    hyprland
 )
 
 # ── colours ───────────────────────────────────────────────────────────────────

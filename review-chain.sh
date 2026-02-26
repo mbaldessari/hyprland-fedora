@@ -60,7 +60,7 @@ BUILD_ORDER=(
     hyprpaper
     hyprland-guiutils
     hyprlauncher
-    hyprland-git
+    hyprland
 )
 
 # ── colours ───────────────────────────────────────────────────────────────────
