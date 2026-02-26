@@ -2,3 +2,4 @@ _results
 **/*.tgz
 **/*.tar.gz
 _review
+.copr/
