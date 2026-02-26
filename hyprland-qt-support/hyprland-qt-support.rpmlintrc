@@ -1,4 +1,0 @@
-# No test suite available
-addFilter("no-%check-section")
-# QML style plugins are runtime libraries, not development files
-addFilter("invalid-soname")

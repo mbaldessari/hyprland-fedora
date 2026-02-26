@@ -1,6 +1,0 @@
-# "qml" is a well-known Qt term, not a misspelling
-addFilter("spelling-error.*qml")
-# No man pages provided by upstream
-addFilter("no-manual-page-for-binary")
-# No test suite available
-addFilter("no-%check-section")
