@@ -1,2 +1,4 @@
 # Protocol package, nothing to test
-addFilter("no-%check-section")
+Filters = [
+    'no-%check-section',
+]

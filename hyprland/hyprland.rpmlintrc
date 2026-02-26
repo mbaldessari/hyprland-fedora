@@ -1,11 +1,13 @@
 # No man pages for hyprpm and start-hyprland; Hyprland.1 covers hyprland
-addFilter("no-manual-page-for-binary")
 # No test suite available in build
-addFilter("no-%check-section")
 # Intentionally obsoleting old package names without providing them
-addFilter("obsolete-not-provided")
 # uwsm subpackage only contains a desktop file
-addFilter("no-binary")
-addFilter("no-documentation")
 # devel subpackage contains only headers and pkgconfig
-addFilter("only-non-binary-in-usr-lib")
+Filters = [
+    'no-manual-page-for-binary',
+    'no-%check-section',
+    'obsolete-not-provided',
+    'no-binary',
+    'no-documentation',
+    'only-non-binary-in-usr-lib',
+]

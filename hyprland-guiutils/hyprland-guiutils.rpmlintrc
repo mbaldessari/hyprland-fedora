@@ -1,6 +1,6 @@
-# No man pages provided by upstream
-addFilter("no-manual-page-for-binary")
+# No man page provided by upstream
 # No test suite available
-addFilter("no-%check-section")
-# Intentionally obsoleting hyprland-qtutils without providing it
-addFilter("obsolete-not-provided")
+Filters = [
+    'no-manual-page-for-binary',
+    'no-%check-section',
+]

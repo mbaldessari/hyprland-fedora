@@ -1,2 +1,4 @@
 # Header-only library, no tests to run
-addFilter("no-%check-section")
+Filters = [
+    'no-%check-section',
+]

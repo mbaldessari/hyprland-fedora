@@ -1,2 +1,4 @@
 # "Hyprland" is a proper name, not a misspelling
-addFilter("spelling-error.*Hyprland")
+Filters = [
+    'spelling-error.*Hyprland',
+]
