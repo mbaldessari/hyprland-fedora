@@ -1,8 +1,19 @@
 [TODO]
 
 - Start going through fedora reviews of each package
-- hyprlock is bundling sdbus-cpp?
+- We currently use udis86 1.7.2 from https://github.com/vmt/udis86. debian and ubuntu have moved on to a more popular fork
+  (which was what was bundled). Maybe we can file a BZ and ask:
+  
+  ```
+  Currently the package is pointing to https://github.com/vmt/udis86 which has not been touched in 12 years or so.
+
+  Would it be possible to switch to a more maintained fork (which is also not crazy active, but seems to be relatively popular): https://github.com/canihavesomecoffee/udis86 (cmake, pkg-config, library support, etc) ?
+
+  Debian & Ubuntu already switched to that fork:
+  https://packages.debian.org/sid/libudis86-0
+  ```
 
 [DONE]
 
 - Do a rawhide build-chain run
+- Most unbundling is done
