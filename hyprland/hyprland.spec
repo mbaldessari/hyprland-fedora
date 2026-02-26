@@ -4,9 +4,6 @@
 %global commits_count 6689
 %global commit_date Sat Dec 06 00:42:26 2025
 
-%global protocols_commit 3a5c2bda1c1a4e55cc1330c782547695a93f05b2
-%global protocols_shortcommit %(c=%{protocols_commit}; echo ${c:0:7})
-
 %global udis86_commit 5336633af70f3917760a6d441ff02d93477b0c86
 %global udis86_shortcommit %(c=%{udis86_commit}; echo ${c:0:7})
 
@@ -16,7 +13,6 @@ Release:        %autorelease -b2
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
 # hyprland: BSD-3-Clause
-# subprojects/hyprland-protocols: BSD-3-Clause
 # subproject/udis86: BSD-2-Clause
 # protocols/ext-workspace-unstable-v1.xml: HPND-sell-variant
 # protocols/wlr-foreign-toplevel-management-unstable-v1.xml: HPND-sell-variant
@@ -26,7 +22,6 @@ License:        BSD-3-Clause AND BSD-2-Clause AND HPND-sell-variant AND LGPL-2.1
 URL:            https://github.com/hyprwm/Hyprland
 %if 0%{?bumpver}
 Source0:        %{url}/archive/%{hyprland_commit}/%{name}-%{hyprland_shortcommit}.tar.gz
-Source2:        https://github.com/hyprwm/hyprland-protocols/archive/%{protocols_commit}/protocols-%{protocols_shortcommit}.tar.gz
 Source3:        https://github.com/canihavesomecoffee/udis86/archive/%{udis86_commit}/udis86-%{udis86_shortcommit}.tar.gz
 %else
 Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
@@ -117,22 +112,6 @@ Requires:       hyprgraphics%{?_isa} >= 0.1.6
 Requires:       hyprlang%{?_isa} >= 0.6.3
 Requires:       hyprutils%{?_isa} >= 0.8.4
 
-%{lua:do
-if string.match(rpm.expand('%{name}'), '%-git$') then
-    print('Conflicts: hyprland'..'\n')
-    print('Obsoletes: hyprland-nvidia-git < 0.32.3^30.gitad3f688-2'..'\n')
-    print(rpm.expand('Provides: hyprland-nvidia-git = %{version}-%{release}')..'\n')
-    print('Obsoletes: hyprland-aquamarine-git < 0.41.2^20.git4b84029-2'..'\n')
-elseif not string.match(rpm.expand('%{name}'), 'hyprland$') then
-    print(rpm.expand('Provides: hyprland = %{version}-%{release}')..'\n')
-    print('Conflicts: hyprland'..'\n')
-else
-    print('Obsoletes: hyprland-nvidia < 1:0.32.3-2'..'\n')
-    print(rpm.expand('Provides: hyprland-nvidia = %{version}-%{release}')..'\n')
-    print('Obsoletes: hyprland-legacyrenderer < 0.49.0'..'\n')
-end
-end}
-
 # Used in the default configuration
 Recommends:     kitty
 Recommends:     wofi
@@ -169,17 +148,6 @@ Summary:        Header and protocol files for %{name}
 License:        BSD-3-Clause
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       cpio
-%{lua:do
-if string.match(rpm.expand('%{name}'), 'hyprland%-git$') then
-    print('Obsoletes: hyprland-nvidia-git-devel < 0.32.3^30.gitad3f688-2'..'\n')
-    print(rpm.expand('Provides: hyprland-nvidia-git-devel = %{version}-%{release}')..'\n')
-    print('Obsoletes: hyprland-aquamarine-git-devel < 0.41.2^20.git4b84029-2'..'\n')
-elseif string.match(rpm.expand('%{name}'), 'hyprland$') then
-    print('Obsoletes: hyprland-nvidia-devel < 1:0.32.3-2'..'\n')
-    print(rpm.expand('Provides: hyprland-nvidia-devel = %{version}-%{release}')..'\n')
-    print('Obsoletes: hyprland-legacyrenderer-devel < 0.49.0'..'\n')
-end
-end}
 %printbdeps -r
 Requires:       git-core
 Requires:       pkgconfig(xkbcommon)
@@ -194,8 +162,9 @@ version to simplify plugin packaging.
 %prep
 %autosetup -n %{?bumpver:Hyprland-%{hyprland_commit}} %{!?bumpver:hyprland-source} -N
 
+rm -rf subprojects/hyprland-protocols
+
 %if 0%{?bumpver}
-tar -xf %{SOURCE2} -C subprojects/hyprland-protocols --strip=1
 tar -xf %{SOURCE3} -C subprojects/udis86 --strip=1
 sed -e '/GIT_COMMIT_HASH/s/unknown/%{hyprland_commit}/' \
     -e '/GIT_BRANCH/s/unknown/main/' \
@@ -206,7 +175,6 @@ sed -e '/GIT_COMMIT_HASH/s/unknown/%{hyprland_commit}/' \
     -i CMakeLists.txt
 %endif
 
-cp -p subprojects/hyprland-protocols/LICENSE LICENSE-hyprland-protocols
 cp -p subprojects/udis86/LICENSE LICENSE-udis86
 
 sed -i \
@@ -239,7 +207,7 @@ install -Dpm644 %{SOURCE4} -t %{buildroot}%{_rpmconfigdir}/macros.d
 
 
 %files
-%license LICENSE LICENSE-udis86 LICENSE-hyprland-protocols
+%license LICENSE LICENSE-udis86
 %{_bindir}/[Hh]yprland
 %{_bindir}/hyprctl
 %{_bindir}/hyprpm
