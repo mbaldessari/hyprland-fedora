@@ -6,7 +6,6 @@ Summary:        A fast and consistent wire protocol for IPC
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprwire
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}

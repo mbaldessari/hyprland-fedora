@@ -6,7 +6,6 @@ Summary:        A Hyprland implementation of wayland-scanner, in and for C++
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprwayland-scanner
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}

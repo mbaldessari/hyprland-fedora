@@ -1,4 +1,0 @@
-# Header-only library, no tests to run
-Filters = [
-    'no-%check-section',
-]

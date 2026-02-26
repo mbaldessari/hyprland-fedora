@@ -8,7 +8,6 @@ Summary:        Extremely fast, in memory, JSON and interface library
 License:        MIT
 URL:            https://github.com/stephenberry/glaze
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source1:        %{name}.rpmlintrc
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++

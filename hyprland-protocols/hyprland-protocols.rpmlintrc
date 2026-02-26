@@ -1,4 +1,0 @@
-# Protocol package, nothing to test
-Filters = [
-    'no-%check-section',
-]

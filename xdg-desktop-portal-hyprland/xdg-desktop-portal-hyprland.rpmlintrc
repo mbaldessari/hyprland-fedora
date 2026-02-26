@@ -1,6 +1,0 @@
-# No man page provided by upstream
-# No test suite available
-Filters = [
-    'no-manual-page-for-binary',
-    'no-%check-section',
-]

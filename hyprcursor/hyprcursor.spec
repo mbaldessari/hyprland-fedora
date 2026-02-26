@@ -6,7 +6,6 @@ Summary:        The Hyprland cursor format, library and utilities
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprcursor
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}

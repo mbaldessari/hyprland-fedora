@@ -7,7 +7,6 @@ BuildArch:      noarch
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprland-protocols
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source1:        %{name}.rpmlintrc
 
 BuildRequires:  meson
 

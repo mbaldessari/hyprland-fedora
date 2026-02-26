@@ -1,4 +1,0 @@
-# No test suite available
-Filters = [
-    'no-%check-section',
-]

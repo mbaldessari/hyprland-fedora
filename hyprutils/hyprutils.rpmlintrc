@@ -1,4 +1,0 @@
-# "Hyprland" is a proper name, not a misspelling
-Filters = [
-    'spelling-error.*Hyprland',
-]

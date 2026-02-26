@@ -7,7 +7,6 @@ Summary:        XDG Desktop Portal backend for Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/xdg-desktop-portal-hyprland
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source1:        %{name}.rpmlintrc
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++

@@ -5,7 +5,6 @@ Summary:        Hyprland GUI utility applications
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprland-guiutils
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Source1:        %{name}.rpmlintrc
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}

@@ -22,7 +22,6 @@ Source0:        %{url}/archive/%{hyprland_commit}/%{name}-%{hyprland_shortcommit
 Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 %endif
 Source4:        macros.hyprland
-Source5:        %{name}.rpmlintrc
 
 %{lua:
 hyprdeps = {
