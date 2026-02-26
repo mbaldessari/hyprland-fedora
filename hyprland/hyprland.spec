@@ -1,12 +1,6 @@
-%global hyprland_commit f8d5aad1a1f61e1b6443c27394a38c8c54d39e9e
-%global hyprland_shortcommit %(c=%{hyprland_commit}; echo ${c:0:7})
-%global bumpver 4
-%global commits_count 6689
-%global commit_date Sat Dec 06 00:42:26 2025
-
 Name:           hyprland
-Version:        0.53.3%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
-Release:        %autorelease -b2
+Version:        0.53.3
+Release:        %autorelease
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
 # hyprland: BSD-3-Clause
@@ -16,11 +10,7 @@ Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its 
 # protocols/idle.xml: LGPL-2.1-or-later
 License:        BSD-3-Clause AND HPND-sell-variant AND LGPL-2.1-or-later
 URL:            https://github.com/hyprwm/Hyprland
-%if 0%{?bumpver}
-Source0:        %{url}/archive/%{hyprland_commit}/%{name}-%{hyprland_shortcommit}.tar.gz
-%else
 Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
-%endif
 Source4:        macros.hyprland
 
 %{lua:
@@ -151,19 +141,9 @@ version to simplify plugin packaging.
 
 
 %prep
-%autosetup -n %{?bumpver:Hyprland-%{hyprland_commit}} %{!?bumpver:hyprland-source} -N
+%autosetup -n hyprland-source -N
 
 rm -rf subprojects/hyprland-protocols subprojects/udis86
-
-%if 0%{?bumpver}
-sed -e '/GIT_COMMIT_HASH/s/unknown/%{hyprland_commit}/' \
-    -e '/GIT_BRANCH/s/unknown/main/' \
-    -e '/GIT_COMMIT_DATE/s/unknown/%{commit_date}/' \
-    -e '/GIT_TAG/s/unknown/%{lua:print((macros.version:gsub('[%^~].*', '')))}/' \
-    -e '/GIT_DIRTY/s/unknown/clean/' \
-    -e '/GIT_COMMITS/s/0/%{commits_count}/' \
-    -i CMakeLists.txt
-%endif
 
 sed -i \
   -e "s|@@HYPRLAND_VERSION@@|%{version}|g" \
