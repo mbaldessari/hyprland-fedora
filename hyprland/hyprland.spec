@@ -12,6 +12,7 @@ License:        BSD-3-Clause AND HPND-sell-variant AND LGPL-2.1-or-later
 URL:            https://github.com/hyprwm/Hyprland
 Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 Source4:        macros.hyprland
+Patch0:         bump-glaze-7.patch
 
 %{lua:
 hyprdeps = {
@@ -141,7 +142,7 @@ version to simplify plugin packaging.
 
 
 %prep
-%autosetup -n hyprland-source -N
+%autosetup -n hyprland-source -p1
 
 rm -rf subprojects/hyprland-protocols subprojects/udis86
 
