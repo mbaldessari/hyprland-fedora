@@ -84,6 +84,7 @@ for _, dep in ipairs(hyprdeps) do
 end
 }
 
+BuildRequires:  desktop-file-utils
 %printbdeps
 
 Requires:       xorg-x11-server-Xwayland%{?_isa}
@@ -166,6 +167,11 @@ sed -i \
 install -Dpm644 %{SOURCE4} -t %{buildroot}%{_rpmconfigdir}/macros.d
 install -Dpm644 %{SOURCE5} %{SOURCE6} -t %{buildroot}%{_mandir}/man1
 ln -s Hyprland.1 %{buildroot}%{_mandir}/man1/hyprland.1
+
+
+%check
+desktop-file-validate %{buildroot}%{_datadir}/wayland-sessions/hyprland.desktop
+desktop-file-validate %{buildroot}%{_datadir}/wayland-sessions/hyprland-uwsm.desktop
 
 
 %files
