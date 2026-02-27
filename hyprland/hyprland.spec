@@ -84,12 +84,6 @@ end
 
 %printbdeps
 
-%if 0%{?rhel} == 10
-BuildRequires:  gcc-toolset-15
-BuildRequires:  gcc-toolset-15-gcc-c++
-BuildRequires:  gcc-toolset-15-annobin-plugin-gcc
-%endif
-
 Requires:       xorg-x11-server-Xwayland%{?_isa}
 Requires:       aquamarine%{?_isa} >= 0.9.2
 Requires:       hyprcursor%{?_isa} >= 0.1.13
@@ -156,10 +150,6 @@ sed -i \
 
 %build
 
-%if 0%{?rhel} == 10
-source /usr/lib/gcc-toolset/15-env.source
-%endif
-
 %cmake \
     -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
@@ -169,10 +159,6 @@ source /usr/lib/gcc-toolset/15-env.source
 
 
 %install
-
-%if 0%{?rhel} == 10
-source /usr/lib/gcc-toolset/15-env.source
-%endif
 
 %cmake_install
 install -Dpm644 %{SOURCE4} -t %{buildroot}%{_rpmconfigdir}/macros.d
