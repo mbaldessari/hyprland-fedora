@@ -36,12 +36,15 @@ Development files for %{name}.
 %build
 %cmake -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_TESTING=OFF
+    -DBUILD_TESTING=ON
 %cmake_build
 
 %install
 %cmake_install
 install -Dpm644 %{SOURCE1} -t %{buildroot}%{_mandir}/man1
+
+%check
+ctest --test-dir %{_vpath_builddir} -R fork --output-on-failure
 
 %files
 %license LICENSE

@@ -54,11 +54,14 @@ Development files for %{name}.
 %build
 %cmake -GNinja \
     -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_TESTING=OFF
+    -DBUILD_TESTING=ON
 %cmake_build
 
 %install
 %cmake_install
+
+%check
+%ctest
 
 %files
 %license LICENSE
