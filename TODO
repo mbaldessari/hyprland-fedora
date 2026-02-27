@@ -62,6 +62,8 @@
 
 [DONE]
 
+- Added %check to the only two packages supporting it: hyprtoolkit and hyprwire
+  glaze could support it but we'd have to package ut first: https://github.com/openalgz/ut
 - Missing manpages
 - Do a rawhide build-chain run
 - Most unbundling is done
