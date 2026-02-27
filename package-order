@@ -1,0 +1,21 @@
+BUILD_ORDER=(
+    hyprutils
+    glaze
+    hyprwayland-scanner
+    hyprland-protocols
+    hyprlang
+    hyprwire
+    hyprgraphics
+    aquamarine
+    hyprcursor
+    hypridle
+    hyprsunset
+    hyprlock
+    xdg-desktop-portal-hyprland
+    hyprtoolkit
+    hyprpaper
+    hyprland-guiutils
+    hyprlauncher
+    hyprland
+    hyprland-plugins
+)

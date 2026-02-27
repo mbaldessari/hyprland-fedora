@@ -15,6 +15,8 @@
 
 set -euo pipefail
 
+. package-order
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ── defaults ──────────────────────────────────────────────────────────────────
@@ -35,28 +37,6 @@ while [[ $# -gt 0 ]]; do
         *) echo "Unknown option: $1" >&2; exit 1 ;;
     esac
 done
-
-BUILD_ORDER=(
-    hyprutils
-    glaze
-    hyprwayland-scanner
-    hyprland-protocols
-    hyprlang
-    hyprwire
-    hyprgraphics
-    aquamarine
-    hyprcursor
-    hypridle
-    hyprsunset
-    hyprlock
-    xdg-desktop-portal-hyprland
-    hyprtoolkit
-    hyprpaper
-    hyprland-guiutils
-    hyprlauncher
-    hyprland
-    hyprland-plugins
-)
 
 # ── colours ───────────────────────────────────────────────────────────────────
 if [[ -t 1 ]]; then
