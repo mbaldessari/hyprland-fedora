@@ -20,7 +20,6 @@
  17. hyprland-guiutils           -> (NEW)            - *       - 0.2.1  - *
  18. hyprlauncher                -> (NEW)            - *       - 0.1.5  - *
  19. hyprland                    -> (ORPHANED)       - *       - 0.53.3 - Jiri Kyjovsky
- 20. hyprland-plugins            -> (NEW)            - *       - 0.53.0 - *
 
  - Flagged issues
 
@@ -62,6 +61,9 @@
 
 [DONE]
 
+- Dropped hyprland-plugins. For now it seems too tied to hyperland without the same release
+  frequency: 
+  20. hyprland-plugins            -> (NEW)            - *       - 0.53.0 - *
 - Added %check to the only two packages supporting it: hyprtoolkit and hyprwire
   glaze could support it but we'd have to package ut first: https://github.com/openalgz/ut
 - Missing manpages

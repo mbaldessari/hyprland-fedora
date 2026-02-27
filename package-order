@@ -17,5 +17,4 @@ BUILD_ORDER=(
     hyprland-guiutils
     hyprlauncher
     hyprland
-    hyprland-plugins
 )
