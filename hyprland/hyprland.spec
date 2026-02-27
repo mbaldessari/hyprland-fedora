@@ -168,6 +168,9 @@ install -Dpm644 %{SOURCE4} -t %{buildroot}%{_rpmconfigdir}/macros.d
 install -Dpm644 %{SOURCE5} %{SOURCE6} -t %{buildroot}%{_mandir}/man1
 ln -s Hyprland.1 %{buildroot}%{_mandir}/man1/hyprland.1
 
+# Fix desktop file validation error: DesktopNames should be X-DesktopNames
+sed -i 's/^DesktopNames=/X-DesktopNames=/' %{buildroot}%{_datadir}/wayland-sessions/*.desktop
+
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/wayland-sessions/hyprland.desktop
