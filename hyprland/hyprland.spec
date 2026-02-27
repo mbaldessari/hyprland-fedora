@@ -1,5 +1,5 @@
 Name:           hyprland
-Version:        0.53.3
+Version:        0.54.0
 Release:        %autorelease
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
@@ -17,7 +17,6 @@ Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 Source4:        macros.hyprland
 Source5:        hyprpm.1
 Source6:        start-hyprland.1
-Patch0:         bump-glaze-7.patch
 
 %{lua:
 hyprdeps = {
