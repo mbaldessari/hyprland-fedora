@@ -7,6 +7,7 @@ Summary:        Blazing fast Wayland wallpaper utility with IPC controls
 License:        BSD-3-Clause AND HPND-sell-variant
 URL:            https://github.com/hyprwm/hyprpaper
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        hyprpaper.1
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -45,6 +46,7 @@ runtime configuration.
 
 %install
 %cmake_install
+install -Dpm644 %{SOURCE1} -t %{buildroot}%{_mandir}/man1
 
 %post
 %systemd_user_post %{name}.service
@@ -56,6 +58,7 @@ runtime configuration.
 %license LICENSE
 %doc README.md
 %{_bindir}/%{name}
+%{_mandir}/man1/%{name}.1*
 %{_userunitdir}/%{name}.service
 
 %changelog

@@ -1,0 +1,101 @@
+.TH HYPRLOCK 1 "2025-11-21" "hyprlock 0.9.2" "Hyprland Ecosystem"
+.SH NAME
+hyprlock \- Hyprland's GPU\-accelerated screen locking utility
+.SH SYNOPSIS
+.B hyprlock
+.RI [ options ]
+.SH DESCRIPTION
+.B hyprlock
+is a simple, multi\-threaded, GPU\-accelerated screen locking utility for
+Hyprland.
+It uses the ext\-session\-lock Wayland protocol to lock the session.
+.PP
+Features include blurred screenshot backgrounds, gradient borders,
+animations, shadows, fractional scaling support, and native fingerprint
+authentication through libfprint.
+.PP
+Without a configuration file,
+.B hyprlock
+renders a black screen but still locks the session.
+.SH OPTIONS
+.TP
+.BR \-c ", " \-\-config " " \fIfile\fR
+Specify the configuration file to use.
+.TP
+.BR \-\-display " " \fIname\fR
+Specify the Wayland display to connect to.
+.TP
+.BR \-\-grace " " \fIseconds\fR
+Set the grace period in seconds before requiring authentication.
+During the grace period, any input dismisses the lock screen.
+.TP
+.BR \-\-immediate\-render
+Do not wait for resources before drawing the background.
+.TP
+.BR \-\-no\-fade\-in
+Disable the fade\-in animation when the lock screen appears.
+.TP
+.BR \-v ", " \-\-verbose
+Enable verbose logging.
+.TP
+.BR \-q ", " \-\-quiet
+Disable logging.
+.TP
+.BR \-V ", " \-\-version
+Show version information.
+.TP
+.BR \-h ", " \-\-help
+Show help message.
+.SH CONFIGURATION
+The configuration file is searched for at
+.IR $XDG_CONFIG_HOME/hypr/hyprlock.conf
+or
+.IR ~/.config/hypr/hyprlock.conf .
+.SS General options
+.TP
+.B hide_cursor
+Hide the cursor on the lock screen. Default: 0.
+.TP
+.B ignore_empty_input
+Do not show a failed attempt on empty password submission. Default: 0.
+.TP
+.B immediate_render
+Render immediately without waiting for resources. Default: 0.
+.TP
+.B fail_timeout
+Timeout in milliseconds after a failed authentication attempt. Default: 2000.
+.SS Authentication
+.TP
+.B auth:pam:enabled
+Enable PAM authentication. Default: 1.
+.TP
+.B auth:pam:module
+PAM module name. Default: hyprlock.
+.TP
+.B auth:fingerprint:enabled
+Enable fingerprint authentication via libfprint. Default: 0.
+.SS Widgets
+The following widget types are available for configuring the lock screen
+appearance:
+.BR background ,
+.BR shape ,
+.BR image ,
+.BR input\-field ,
+and
+.BR label .
+Each supports monitor selection, position, size, color, rounding, border,
+shadow, and animation properties.
+.SH FILES
+.TP
+.I /etc/pam.d/hyprlock
+PAM configuration for hyprlock.
+.SH SEE ALSO
+.BR hypridle (1),
+.BR Hyprland (1),
+.BR hyprctl (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/hyprlock/issues
+.UE .

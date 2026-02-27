@@ -5,6 +5,11 @@ Summary:        Hyprland GUI utility applications
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprland-guiutils
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        hyprland-dialog.1
+Source2:        hyprland-donate-screen.1
+Source3:        hyprland-run.1
+Source4:        hyprland-welcome.1
+Source5:        hyprland-update-screen.1
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -44,6 +49,8 @@ hyprland-qtutils.
 
 %install
 %cmake_install
+install -Dpm644 %{SOURCE1} %{SOURCE2} %{SOURCE3} %{SOURCE4} %{SOURCE5} \
+    -t %{buildroot}%{_mandir}/man1
 
 %files
 %license LICENSE
@@ -53,6 +60,11 @@ hyprland-qtutils.
 %{_bindir}/hyprland-update-screen
 %{_bindir}/hyprland-run
 %{_bindir}/hyprland-welcome
+%{_mandir}/man1/hyprland-dialog.1*
+%{_mandir}/man1/hyprland-donate-screen.1*
+%{_mandir}/man1/hyprland-run.1*
+%{_mandir}/man1/hyprland-update-screen.1*
+%{_mandir}/man1/hyprland-welcome.1*
 
 %changelog
 %autochangelog

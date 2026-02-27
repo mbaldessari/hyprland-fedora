@@ -1,0 +1,87 @@
+.TH HYPRPAPER 1 "2025-12-03" "hyprpaper 0.8.3" "Hyprland Ecosystem"
+.SH NAME
+hyprpaper \- fast Wayland wallpaper utility with IPC controls
+.SH SYNOPSIS
+.B hyprpaper
+.RI [ options ]
+.SH DESCRIPTION
+.B hyprpaper
+is a fast wallpaper utility for Hyprland with the ability to dynamically
+change wallpapers through IPC.
+It supports per\-output wallpapers, multiple fit modes, preloading for
+instant wallpaper changes, and fractional scaling.
+.PP
+Supported image formats include JPEG, PNG, BMP, WebP, and SVG.
+.SH OPTIONS
+.TP
+.BR \-c ", " \-\-config " " \fIpath\fR
+Set a custom configuration file path.
+.TP
+.BR \-\-verbose
+Enable verbose logging.
+.TP
+.BR \-v ", " \-\-version
+Show version information.
+.TP
+.BR \-h ", " \-\-help
+Show help message.
+.SH CONFIGURATION
+The configuration file is searched for at
+.IR $XDG_CONFIG_HOME/hypr/hyprpaper.conf
+or
+.IR ~/.config/hypr/hyprpaper.conf .
+A configuration file is not required.
+.SS General options
+.TP
+.B ipc
+Enable IPC functionality. Default: 1.
+.TP
+.B splash
+Controls splash screen display. Default: 1.
+.TP
+.B splash_offset
+Splash screen offset. Default: 20.
+.TP
+.B splash_opacity
+Splash screen opacity. Default: 0.8.
+.SS Wallpaper section
+Wallpaper entries are defined as special categories:
+.TP
+.B monitor
+Target monitor name.
+.TP
+.B path
+Path to the image file or directory.
+.TP
+.B fit_mode
+How the wallpaper fits the screen.
+Valid values:
+.BR cover ,
+.BR contain ,
+.BR fit ,
+.BR tile .
+Default: cover.
+.TP
+.B timeout
+Timeout for automatic wallpaper changes (in seconds). Default: 0 (disabled).
+.SH IPC
+.B hyprpaper
+exposes a Hyprwire IPC socket at
+.IR $XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.hyprpaper.sock .
+This allows runtime wallpaper changes without restarting the daemon.
+.SH SYSTEMD INTEGRATION
+.B hyprpaper
+ships with a systemd user service:
+.PP
+.RS
+.B systemctl \-\-user enable \-\-now hyprpaper.service
+.RE
+.SH SEE ALSO
+.BR Hyprland (1),
+.BR hyprctl (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/hyprpaper/issues
+.UE .

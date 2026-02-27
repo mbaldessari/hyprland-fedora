@@ -1,0 +1,46 @@
+.TH HYPRWAYLAND\-SCANNER 1 "2025-10-30" "hyprwayland-scanner 0.4.5" "Hyprland Ecosystem"
+.SH NAME
+hyprwayland\-scanner \- generate C++ bindings from Wayland protocol XML files
+.SH SYNOPSIS
+.B hyprwayland\-scanner
+.RI [ options ]
+.I protopath
+.I outpath
+.SH DESCRIPTION
+.B hyprwayland\-scanner
+is a Hyprland implementation of wayland\-scanner that generates RAII\-ready,
+modern C++ bindings for Wayland protocols.
+It can generate code for either server\-side or client\-side protocol
+implementations.
+.PP
+Requires a C++ compiler with C++23 support.
+.SH ARGUMENTS
+.TP
+.I protopath
+Path to the input Wayland protocol XML file.
+.TP
+.I outpath
+Output directory for the generated C++ source files.
+.SH OPTIONS
+.TP
+.BR \-v ", " \-\-version
+Display version information and exit.
+.TP
+.BR \-c ", " \-\-client
+Generate client\-side code.
+The default is to generate server\-side code.
+.TP
+.B \-\-no\-interfaces
+Exclude interface definitions from the generated output.
+.TP
+.B \-\-wayland\-enums
+Use Wayland\-style enum naming (snake_case instead of camelCase).
+.SH SEE ALSO
+.BR wayland\-scanner (1),
+.BR Hyprland (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/hyprwayland-scanner/issues
+.UE .

@@ -5,6 +5,7 @@ Summary:        An application to enable a blue-light filter on Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprsunset
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        hyprsunset.1
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -34,6 +35,7 @@ protocol and requires Hyprland 0.45.0 or later.
 
 %install
 %cmake_install
+install -Dpm644 %{SOURCE1} -t %{buildroot}%{_mandir}/man1
 
 %post
 %systemd_user_post %{name}.service
@@ -45,6 +47,7 @@ protocol and requires Hyprland 0.45.0 or later.
 %license LICENSE
 %doc README.md
 %{_bindir}/%{name}
+%{_mandir}/man1/%{name}.1*
 %{_userunitdir}/%{name}.service
 
 %changelog

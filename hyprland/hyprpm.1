@@ -1,0 +1,99 @@
+.TH HYPRPM 1 "2025-12-17" "hyprland 0.53.3" "Hyprland Ecosystem"
+.SH NAME
+hyprpm \- Hyprland plugin manager
+.SH SYNOPSIS
+.B hyprpm
+.I command
+.RI [ args ]
+.RI [ flags ]
+.SH DESCRIPTION
+.B hyprpm
+is Hyprland's built\-in plugin manager.
+It manages installation, enabling, disabling, updating, and removal of
+Hyprland plugins from git repositories.
+.PP
+Plugin repositories must contain a
+.I hyprpm.toml
+manifest file at the repository root.
+.SH COMMANDS
+.TP
+.BI add " url " \fR[ "git rev" \fR]
+Install a plugin repository from a git URL.
+An optional git revision can be specified to lock to a specific version.
+.TP
+.BI remove " url" | name | author/name
+Remove an installed plugin repository.
+.TP
+.BI enable " name" | author/name
+Enable a plugin.
+.TP
+.BI disable " name" | author/name
+Disable a plugin.
+.TP
+.B update
+Check for and apply updates to all installed plugins.
+.TP
+.B reload
+Reload hyprpm state and ensure all enabled plugins are loaded.
+.TP
+.B list
+List all installed plugins and their status.
+.TP
+.B purge\-cache
+Remove the entire hyprpm cache, including built plugins, settings, and
+headers.
+.SH FLAGS
+.TP
+.BR \-h ", " \-\-help
+Show help message.
+.TP
+.BR \-v ", " \-\-verbose
+Enable verbose logging.
+.TP
+.BR \-f ", " \-\-force
+Force the operation, ignoring safety checks.
+.TP
+.BR \-n ", " \-\-notify
+Send a Hyprland notification on successful plugin load.
+.TP
+.BR \-s ", " \-\-no\-shallow
+Disable shallow cloning of Hyprland sources.
+.TP
+.B \-\-no\-nix
+Disable nix develop for build commands.
+.TP
+.BI \-\-hl\-url " url"
+Pass a custom Hyprland source URL.
+.SH PREREQUISITES
+The following tools are required:
+.BR cpio (1),
+.BR cmake (1),
+.BR git (1),
+.BR meson (1),
+and a C++ compiler.
+On Fedora, development packages (\-devel) may also be needed.
+.SH EXAMPLES
+Install and enable a plugin:
+.PP
+.RS
+.nf
+hyprpm add https://github.com/example/hyprland\-plugin
+hyprpm enable plugin\-name
+.fi
+.RE
+.PP
+To load plugins at startup, add to
+.IR hyprland.conf :
+.PP
+.RS
+.B exec\-once = hyprpm reload
+.RE
+.SH SEE ALSO
+.BR Hyprland (1),
+.BR hyprctl (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/Hyprland/issues
+.UE .

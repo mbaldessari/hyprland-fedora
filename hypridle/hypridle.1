@@ -1,0 +1,114 @@
+.TH HYPRIDLE 1 "2025-10-03" "hypridle 0.1.7" "Hyprland Ecosystem"
+.SH NAME
+hypridle \- Hyprland's idle management daemon
+.SH SYNOPSIS
+.B hypridle
+.RI [ options ]
+.SH DESCRIPTION
+.B hypridle
+is an idle management daemon for the Hyprland ecosystem.
+It uses the ext\-idle\-notify\-v1 Wayland protocol to detect user inactivity
+and execute configurable actions after specified timeouts.
+.PP
+Features include support for D\-Bus loginctl commands (lock, unlock,
+before\-sleep), D\-Bus idle inhibit (used by applications such as Firefox and
+Steam), and systemd idle inhibitors.
+.PP
+A configuration file is required;
+.B hypridle
+will not start without one.
+.SH OPTIONS
+.TP
+.BR \-c ", " \-\-config " " \fIpath\fR
+Specify a custom configuration file path.
+.TP
+.BR \-v ", " \-\-verbose
+Enable verbose logging.
+.TP
+.BR \-q ", " \-\-quiet
+Suppress all output except errors.
+.TP
+.BR \-V ", " \-\-version
+Show version information.
+.TP
+.BR \-h ", " \-\-help
+Show help message.
+.SH CONFIGURATION
+The configuration file is searched for at
+.IR $XDG_CONFIG_HOME/hypr/hypridle.conf ,
+.IR ~/.config/hypr/hypridle.conf ,
+.IR $XDG_CONFIG_DIRS/hypr/hypridle.conf ,
+and
+.IR /etc/hypr/hypridle.conf .
+.SS General section
+.TP
+.B lock_cmd
+Command to run on D\-Bus lock event. Default: empty.
+.TP
+.B unlock_cmd
+Command to run on D\-Bus unlock event. Default: empty.
+.TP
+.B before_sleep_cmd
+Command to run on D\-Bus prepare_sleep event. Default: empty.
+.TP
+.B after_sleep_cmd
+Command to run after the system wakes from sleep. Default: empty.
+.TP
+.B ignore_dbus_inhibit
+Ignore D\-Bus\-sent idle inhibit events. Default: false.
+.TP
+.B ignore_systemd_inhibit
+Ignore systemd\-inhibit idle inhibitors. Default: false.
+.SS Listener section (repeatable)
+.TP
+.B timeout
+Timeout duration in seconds before executing on\-timeout. Required.
+.TP
+.B on\-timeout
+Command to execute when the timeout is reached.
+.TP
+.B on\-resume
+Command to execute when activity resumes after a timeout.
+.SH EXAMPLES
+Typical configuration to lock screen and suspend:
+.PP
+.nf
+general {
+    lock_cmd = hyprlock
+    before_sleep_cmd = loginctl lock\-session
+}
+
+listener {
+    timeout = 300
+    on\-timeout = loginctl lock\-session
+}
+
+listener {
+    timeout = 600
+    on\-timeout = systemctl suspend
+}
+.fi
+.SH SYSTEMD INTEGRATION
+.B hypridle
+ships with a systemd user service:
+.PP
+.RS
+.B systemctl \-\-user enable \-\-now hypridle.service
+.RE
+.PP
+Alternatively, add to
+.IR hyprland.conf :
+.PP
+.RS
+.B exec\-once = hypridle
+.RE
+.SH SEE ALSO
+.BR hyprlock (1),
+.BR Hyprland (1),
+.BR hyprctl (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/hypridle/issues
+.UE .

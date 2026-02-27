@@ -62,6 +62,7 @@
 
 [DONE]
 
+- Missing manpages
 - Do a rawhide build-chain run
 - Most unbundling is done
 - Package hyprland-plugins

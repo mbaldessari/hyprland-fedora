@@ -7,6 +7,7 @@ Summary:        Hyprland's GPU-accelerated screen locking utility
 License:        BSD-3-Clause AND MIT
 URL:            https://github.com/hyprwm/hyprlock
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        hyprlock.1
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -50,11 +51,13 @@ libfprint.
 %install
 %cmake_install
 rm %{buildroot}%{_datadir}/hypr/%{name}.conf
+install -Dpm644 %{SOURCE1} -t %{buildroot}%{_mandir}/man1
 
 %files
 %license LICENSE
 %doc README.md assets/example.conf
 %{_bindir}/%{name}
+%{_mandir}/man1/%{name}.1*
 %config(noreplace) %{_sysconfdir}/pam.d/%{name}
 
 %changelog

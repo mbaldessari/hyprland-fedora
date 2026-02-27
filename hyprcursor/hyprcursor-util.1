@@ -1,0 +1,59 @@
+.TH HYPRCURSOR\-UTIL 1 "2025-12-14" "hyprcursor 0.1.13" "Hyprland Ecosystem"
+.SH NAME
+hyprcursor\-util \- compile, extract, and convert hyprcursor and xcursor themes
+.SH SYNOPSIS
+.B hyprcursor\-util
+.I operation
+.I path
+.RI [ options ]
+.SH DESCRIPTION
+.B hyprcursor\-util
+is a utility for converting between cursor theme formats.
+It works with three cursor theme states:
+compiled hyprcursor themes (usable by applications and compositors),
+compiled xcursor themes (usable by the xcursor library),
+and working state (a navigable format with PNG/SVG cursors and metadata files).
+.PP
+The hyprcursor format addresses limitations of the XCursor format by offering
+automatic scaling with configurable per-cursor methods, SVG (vector) cursor
+support, and significantly better space efficiency.
+.SH OPERATIONS
+An operation must be specified as the first argument.
+.TP
+.BR \-c ", " \-\-create " " \fIpath\fR
+Create a compiled hyprcursor theme from a working state directory.
+.TP
+.BR \-x ", " \-\-extract " " \fIpath\fR
+Extract an xcursor theme into a working state directory.
+.SH OPTIONS
+.TP
+.BR \-v ", " \-\-version
+Display version information.
+.TP
+.BR \-o ", " \-\-output " " \fIdirectory\fR
+Specify the output directory.
+The theme will be written to a subdirectory named
+.IR ACTION _ NAME
+within this directory.
+.TP
+.BR \-\-resize " " \fImode\fR
+Specify a default resize algorithm for shapes (used during extract operations).
+The default is none.
+.SH DEPENDENCIES
+The
+.B xcur2png
+utility is required at runtime for extracting xcursor themes.
+.SH FILES
+Cursor themes are typically stored in
+.I ~/.local/share/icons
+or
+.IR ~/.icons .
+.SH SEE ALSO
+.BR Hyprland (1),
+.BR hyprctl (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/hyprcursor/issues
+.UE .

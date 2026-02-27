@@ -1,0 +1,93 @@
+.TH HYPRSUNSET 1 "2025-11-07" "hyprsunset 0.3.3" "Hyprland Ecosystem"
+.SH NAME
+hyprsunset \- blue\-light filter for Hyprland
+.SH SYNOPSIS
+.B hyprsunset
+.RI [ options ]
+.SH DESCRIPTION
+.B hyprsunset
+is a utility to apply a blue\-light filter on displays managed by Hyprland.
+It uses the hyprland\-ctm\-control\-v1 Wayland protocol, making it specific to
+Hyprland.
+.PP
+Unlike screen shader approaches, the color temperature adjustment is not
+captured in recordings or screenshots.
+.B hyprsunset
+also supports gamma adjustment for controlling perceived display brightness.
+.PP
+Requires Hyprland 0.45.0 or later.
+.SH OPTIONS
+.TP
+.BR \-t ", " \-\-temperature " " \fIkelvin\fR
+Set the color temperature in Kelvin. Default: 6000.
+Lower values produce a warmer (more orange) color.
+.TP
+.BR \-g ", " \-\-gamma " " \fIpercent\fR
+Set display gamma as a percentage. Default: 100.
+.TP
+.BR \-\-gamma_max " " \fIpercent\fR
+Set maximum display gamma as a percentage. Default: 200.
+.TP
+.BR \-i ", " \-\-identity
+Use identity matrix (no color change), effectively disabling the filter.
+.TP
+.BR \-c ", " \-\-config " " \fIpath\fR
+Specify a custom configuration file path.
+.TP
+.BR \-\-verbose
+Enable trace logging.
+.TP
+.BR \-v ", " \-\-version
+Print version information.
+.TP
+.BR \-h ", " \-\-help
+Print help information.
+.SH CONFIGURATION
+The configuration file is searched for at
+.IR $XDG_CONFIG_HOME/hypr/hyprsunset.conf
+or
+.IR ~/.config/hypr/hyprsunset.conf .
+A configuration file is not required.
+.SS General options
+.TP
+.B max\-gamma
+Maximum display gamma percentage. Default: 100.
+.SS Profile section (repeatable)
+Time\-based profiles allow automatic color temperature transitions:
+.TP
+.B time
+Time of day in HH:MM format.
+.TP
+.B temperature
+Color temperature in Kelvin. Default: 6000.
+.TP
+.B gamma
+Gamma multiplier. Default: 1.0.
+.SH EXAMPLES
+Set a warm color temperature for evening use:
+.PP
+.RS
+.B hyprsunset \-t 4000
+.RE
+.PP
+Reduce gamma to 80%:
+.PP
+.RS
+.B hyprsunset \-g 80
+.RE
+.SH SYSTEMD INTEGRATION
+.B hyprsunset
+ships with a systemd user service:
+.PP
+.RS
+.B systemctl \-\-user enable \-\-now hyprsunset.service
+.RE
+.SH SEE ALSO
+.BR Hyprland (1),
+.BR hyprctl (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/hyprsunset/issues
+.UE .

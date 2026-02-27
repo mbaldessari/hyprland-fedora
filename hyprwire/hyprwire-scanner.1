@@ -1,0 +1,49 @@
+.TH HYPRWIRE\-SCANNER 1 "2025-10-25" "hyprwire 0.3.0" "Hyprland Ecosystem"
+.SH NAME
+hyprwire\-scanner \- generate C++ bindings from Hyprwire protocol XML files
+.SH SYNOPSIS
+.B hyprwire\-scanner
+.RI [ options ]
+.I protopath
+.I outpath
+.SH DESCRIPTION
+.B hyprwire\-scanner
+is a code generator for Hyprwire protocol definitions.
+It parses wire protocol XML files and generates C++ bindings for the
+Hyprwire IPC system.
+.PP
+In server mode (default), the following files are generated:
+.IR {protocol\-name}\-spec.hpp ,
+.IR {protocol\-name}\-server.hpp ,
+and
+.IR {protocol\-name}\-server.cpp .
+.PP
+In client mode, the following files are generated:
+.IR {protocol\-name}\-spec.hpp ,
+.IR {protocol\-name}\-client.hpp ,
+and
+.IR {protocol\-name}\-client.cpp .
+.SH ARGUMENTS
+.TP
+.I protopath
+Path to the input protocol XML file.
+.TP
+.I outpath
+Output directory for the generated C++ source files.
+.SH OPTIONS
+.TP
+.BR \-v ", " \-\-version
+Display version information and exit.
+.TP
+.BR \-c ", " \-\-client
+Generate client\-side code.
+The default is to generate server\-side code.
+.SH SEE ALSO
+.BR hyprwayland\-scanner (1),
+.BR Hyprland (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/hyprwire/issues
+.UE .

@@ -6,6 +6,7 @@ Summary:        A multipurpose and versatile launcher / picker for Hyprland
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprlauncher
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        hyprlauncher.1
 Patch0:         compile-fix.patch
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -42,11 +43,13 @@ through wl-clipboard.
 
 %install
 %cmake_install
+install -Dpm644 %{SOURCE1} -t %{buildroot}%{_mandir}/man1
 
 %files
 %license LICENSE
 %doc README.md
 %{_bindir}/%{name}
+%{_mandir}/man1/%{name}.1*
 
 %changelog
 %autochangelog

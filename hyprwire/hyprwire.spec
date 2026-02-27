@@ -6,6 +6,7 @@ Summary:        A fast and consistent wire protocol for IPC
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hyprwire
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        hyprwire-scanner.1
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -40,6 +41,7 @@ Development files for %{name}.
 
 %install
 %cmake_install
+install -Dpm644 %{SOURCE1} -t %{buildroot}%{_mandir}/man1
 
 %files
 %license LICENSE
@@ -50,6 +52,7 @@ Development files for %{name}.
 %files devel
 %doc README.md
 %{_bindir}/%{name}-scanner
+%{_mandir}/man1/%{name}-scanner.1*
 %{_includedir}/%{name}/
 %{_libdir}/cmake/%{name}-scanner/
 %{_libdir}/lib%{name}.so

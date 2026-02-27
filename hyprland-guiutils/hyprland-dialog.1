@@ -1,0 +1,54 @@
+.TH HYPRLAND\-DIALOG 1 "2025-11-20" "hyprland-guiutils 0.2.1" "Hyprland Ecosystem"
+.SH NAME
+hyprland\-dialog \- display a dialog window for Hyprland
+.SH SYNOPSIS
+.B hyprland\-dialog
+.RI [ options ]
+.SH DESCRIPTION
+.B hyprland\-dialog
+is a GUI dialog utility for the Hyprland ecosystem.
+It displays a dialog window with a title, text content, and configurable
+buttons.
+When a button is clicked, its label is printed to standard output and the
+dialog closes.
+.PP
+The window class is
+.BR hyprland\-dialog .
+.SH OPTIONS
+.TP
+.BI \-\-title " string"
+Set the dialog title, displayed as a heading.
+.TP
+.BI \-\-apptitle " string"
+Set the window/application title.
+.TP
+.BI \-\-text " string"
+Set the dialog body text.
+Supports
+.B <br/>
+and
+.B \en
+for line breaks.
+.TP
+.BI \-\-buttons " string"
+Semicolon\-separated list of button labels
+(e.g.\&
+.IR "\(dqOK;Cancel;Help\(dq" ).
+.SH EXAMPLES
+Display a confirmation dialog:
+.PP
+.RS
+.nf
+result=$(hyprland\-dialog \-\-title "Confirm" \e
+    \-\-text "Are you sure?" \e
+    \-\-buttons "Yes;No")
+.fi
+.RE
+.SH SEE ALSO
+.BR Hyprland (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/hyprland-guiutils/issues
+.UE .

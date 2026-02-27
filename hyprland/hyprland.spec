@@ -15,6 +15,8 @@ License:        BSD-3-Clause AND HPND-sell-variant AND LGPL-2.1-or-later
 URL:            https://github.com/hyprwm/Hyprland
 Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 Source4:        macros.hyprland
+Source5:        hyprpm.1
+Source6:        start-hyprland.1
 Patch0:         bump-glaze-7.patch
 
 %{lua:
@@ -162,6 +164,8 @@ sed -i \
 
 %cmake_install
 install -Dpm644 %{SOURCE4} -t %{buildroot}%{_rpmconfigdir}/macros.d
+install -Dpm644 %{SOURCE5} %{SOURCE6} -t %{buildroot}%{_mandir}/man1
+ln -s Hyprland.1 %{buildroot}%{_mandir}/man1/hyprland.1
 
 
 %files
@@ -174,7 +178,10 @@ install -Dpm644 %{SOURCE4} -t %{buildroot}%{_rpmconfigdir}/macros.d
 %{_datadir}/wayland-sessions/hyprland.desktop
 %{_datadir}/xdg-desktop-portal/hyprland-portals.conf
 %{_mandir}/man1/hyprctl.1*
+%{_mandir}/man1/hyprland.1*
 %{_mandir}/man1/Hyprland.1*
+%{_mandir}/man1/hyprpm.1*
+%{_mandir}/man1/start-hyprland.1*
 %{bash_completions_dir}/hypr*
 %{fish_completions_dir}/hypr*.fish
 %{zsh_completions_dir}/_hypr*

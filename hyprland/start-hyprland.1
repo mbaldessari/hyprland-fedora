@@ -1,0 +1,39 @@
+.TH START\-HYPRLAND 1 "2025-12-17" "hyprland 0.53.3" "Hyprland Ecosystem"
+.SH NAME
+start\-hyprland \- start the Hyprland compositor with a watchdog process
+.SH SYNOPSIS
+.B start\-hyprland
+.RI [ options ]
+.RB [ \-\- " " \fIhyprland\-args\fR... ]
+.SH DESCRIPTION
+.B start\-hyprland
+is a wrapper that launches the Hyprland compositor through a watchdog
+process.
+If Hyprland exits uncleanly, the watchdog restarts it in safe mode.
+The process terminates only when Hyprland exits normally.
+.PP
+This is the recommended method for starting Hyprland from a display manager
+or TTY.
+.SH OPTIONS
+.TP
+.BR \-h ", " \-\-help
+Display help information.
+.TP
+.BR \-p ", " \-\-path " " \fIpath\fR
+Override the path to the Hyprland executable.
+.TP
+.B \-\-no\-nixgl
+Force disable nixGL usage.
+.TP
+.B \-\-
+All arguments after this separator are passed directly to the Hyprland
+executable.
+.SH SEE ALSO
+.BR Hyprland (1),
+.BR hyprctl (1)
+.SH AUTHOR
+The Hyprland Development Team
+.SH BUGS
+Report bugs at
+.UR https://github.com/hyprwm/Hyprland/issues
+.UE .

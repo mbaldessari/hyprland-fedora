@@ -5,6 +5,7 @@ Summary:        Hyprland's idle daemon
 License:        BSD-3-Clause
 URL:            https://github.com/hyprwm/hypridle
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        hypridle.1
 
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
@@ -40,11 +41,13 @@ and when activity resumes.
 %install
 %cmake_install
 rm %{buildroot}%{_datadir}/hypr/hypridle.conf
+install -Dpm644 %{SOURCE1} -t %{buildroot}%{_mandir}/man1
 
 %files
 %license LICENSE
 %doc README.md assets/example.conf
 %{_bindir}/%{name}
+%{_mandir}/man1/%{name}.1*
 %{_userunitdir}/%{name}.service
 
 %post

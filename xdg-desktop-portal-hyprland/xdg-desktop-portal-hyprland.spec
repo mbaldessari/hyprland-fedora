@@ -10,6 +10,7 @@ Summary:        XDG Desktop Portal backend for Hyprland
 License:        BSD-3-Clause AND HPND-sell-variant AND MIT
 URL:            https://github.com/hyprwm/xdg-desktop-portal-hyprland
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
+Source1:        hyprland-share-picker.1
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
@@ -62,6 +63,7 @@ screen sharing and other system services.
 
 %install
 %cmake_install
+install -Dpm644 %{SOURCE1} -t %{buildroot}%{_mandir}/man1
 
 
 %post
@@ -75,6 +77,7 @@ screen sharing and other system services.
 %license LICENSE
 %doc README.md
 %{_bindir}/hyprland-share-picker
+%{_mandir}/man1/hyprland-share-picker.1*
 %{_datadir}/dbus-1/services/org.freedesktop.impl.portal.desktop.hyprland.service
 %{_datadir}/xdg-desktop-portal/portals/hyprland.portal
 %{_libexecdir}/%{name}
