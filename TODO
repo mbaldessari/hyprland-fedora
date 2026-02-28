@@ -58,8 +58,8 @@
 
 - 0.54.0 is broken for me when I move the cursor to my secondary screen
   rebuilding upto a383ca1866b04d175bc2cf208859147d22a6968e (commit before Revert 918e2bb9 (GL format overhaul) — most impactful rendering change)
-
-  Testing with 918e2bb9be0e1d233f9394f1d569137788c43c01 included
+  Testing with 918e2bb9be0e1d233f9394f1d569137788c43c01 included -> also works.
+  Testing up to 9ce9ef27053dd25789f12d79d27a20082ad687fb includes ->
 
 [DONE]
 
