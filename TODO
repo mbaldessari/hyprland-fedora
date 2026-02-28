@@ -56,8 +56,10 @@
   https://packages.debian.org/sid/libudis86-0
   ```
 
-- Investigate missing %check sections in all packages. Is there any form of
-  unit/integration testing that we could run?
+- 0.54.0 is broken for me when I move the cursor to my secondary screen
+  rebuilding upto a383ca1866b04d175bc2cf208859147d22a6968e (commit before Revert 918e2bb9 (GL format overhaul) — most impactful rendering change)
+
+  Testing with 918e2bb9be0e1d233f9394f1d569137788c43c01 included
 
 [DONE]
 
