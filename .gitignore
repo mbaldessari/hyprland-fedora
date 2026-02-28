@@ -3,3 +3,6 @@ _results
 **/*.tar.gz
 _review
 .copr/
+**/BUILD/
+**/RPMS/
+**/SRPMS/

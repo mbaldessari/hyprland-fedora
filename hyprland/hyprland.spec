@@ -17,6 +17,7 @@ Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 Source4:        macros.hyprland
 Source5:        hyprpm.1
 Source6:        start-hyprland.1
+Patch0:         0001-renderer-gl-add-internal-gl-formats-and-reduce-inter-reverse.patch
 
 %{lua:
 hyprdeps = {
