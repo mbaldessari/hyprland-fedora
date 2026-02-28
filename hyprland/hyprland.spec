@@ -6,7 +6,7 @@
 
 Name:           hyprland
 Version:        0.54.0%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
-Release:        %autorelease -b2
+Release:        %autorelease -b1
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
 # hyprland: BSD-3-Clause
@@ -27,6 +27,9 @@ Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 Source4:        macros.hyprland
 Source5:        hyprpm.1
 Source6:        start-hyprland.1
+# Fix cursor black box on rotated screens
+Patch0:         6b2c08d3e89b1cb6f9e609664915236bbe5115da.diff
+Patch1:         climits-error.diff
 
 %{lua:
 hyprdeps = {
@@ -151,7 +154,7 @@ version to simplify plugin packaging.
 
 
 %prep
-%autosetup -n %{?bumpver:Hyprland-%{hyprland_commit}} %{!?bumpver:hyprland-source} -N
+%autosetup -n %{?bumpver:Hyprland-%{hyprland_commit}} %{!?bumpver:hyprland-source} -p1
 
 rm -rf subprojects/hyprland-protocols subprojects/udis86
 

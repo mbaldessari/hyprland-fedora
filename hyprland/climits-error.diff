@@ -1,0 +1,12 @@
+diff --git a/src/managers/PointerManager.cpp b/src/managers/PointerManager.cpp
+index c31c11f3..86b9c152 100644
+--- a/src/managers/PointerManager.cpp
++++ b/src/managers/PointerManager.cpp
+@@ -19,6 +19,7 @@
+ #include "../helpers/Drm.hpp"
+ #include "../event/EventBus.hpp"
+ #include <cstring>
++#include <climits>
+ #include <gbm.h>
+ #include <cairo/cairo.h>
+ #include <hyprutils/utils/ScopeGuard.hpp>
