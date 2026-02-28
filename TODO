@@ -56,10 +56,35 @@
   https://packages.debian.org/sid/libudis86-0
   ```
 
-- 0.54.0 is broken for me when I move the cursor to my secondary screen
+- 0.54.0 is broken for me when I move the cursor to any of my secondary screens I get a bick black box
   rebuilding upto a383ca1866b04d175bc2cf208859147d22a6968e (commit before Revert 918e2bb9 (GL format overhaul) — most impactful rendering change)
-  Testing with 918e2bb9be0e1d233f9394f1d569137788c43c01 included -> also works.
-  Testing up to 9ce9ef27053dd25789f12d79d27a20082ad687fb includes ->
+  Testing with 918e2bb9be0e1d233f9394f1d569137788c43c01 included -> works
+  Testing with 9ce9ef27053dd25789f12d79d27a20082ad687fb included -> is broken (cursor just disappears on secondary screens)
+  Testing with 6c3ebed76e7def7b853e21fbf93f6eeb176696f9 included -> is broken (cursor just disappears on secondary screens)
+  Testing with ac9df44788492fd1d12da8ec0fbbf691386c45a4 included -> works
+  Testing with eb0480ba0d0870ab5d8a876f01c6ab033a4b35f4 included -> is broken (cursor just disappears on secondary screens)
+  Testing with fec17e5e79d3c3718e7ff6c7499a5e4452bd8004 included -> works
+  Testing with 92a3b9199939c8b7b61281d1d59dbaa9cc2b2d6c included -> works
+  Testing with 0896775f1bbb44e3d60ca60571fc524aa80ce606 included -> is broken (cursor just disappears on secondary screens)
+  Testing with c99eb23869da2b80e3613a886aa1b99851367a3c included -> works
+
+  0896775f1bbb44e3d60ca60571fc524aa80ce606 is the first bad commit
+  commit 0896775f1bbb44e3d60ca60571fc524aa80ce606
+  Author: Tom Englund <tomenglund26@gmail.com>
+  Date:   Sun Jan 18 13:51:14 2026 +0100
+
+      pointermgr: remove onRenderBufferDestroy (#13008)
+
+      set the damage to cursor plane size instead of INT16_MAX and remove
+      onRenderbufferDestroy, renderbuffer already have a listener that
+      destroys when buffer is destroyed.
+
+  src/managers/PointerManager.cpp | 7 +++----
+  1 file changed, 3 insertions(+), 4 deletions(-)
+
+  Tracked in upstream discussion https://github.com/hyprwm/Hyprland/discussions/13391
+
+  Workaround no_hardware_cursors = 1
 
 [DONE]
 
