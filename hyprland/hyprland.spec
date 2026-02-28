@@ -1,11 +1,11 @@
-%global hyprland_commit f8d5aad1a1f61e1b6443c27394a38c8c54d39e9e
+%global hyprland_commit c99eb23869da2b80e3613a886aa1b99851367a3c
 %global hyprland_shortcommit %(c=%{hyprland_commit}; echo ${c:0:7})
-%global bumpver 4
+# % global bumpver 
 %global commits_count 6689
 %global commit_date Sat Dec 06 00:42:26 2025
 
 Name:           hyprland
-Version:        0.53.3%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
+Version:        0.54.0%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
 Release:        %autorelease -b2
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
@@ -27,7 +27,6 @@ Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 Source4:        macros.hyprland
 Source5:        hyprpm.1
 Source6:        start-hyprland.1
-Patch0:         0001-renderer-gl-add-internal-gl-formats-and-reduce-inter-reverse.patch
 
 %{lua:
 hyprdeps = {
