@@ -27,6 +27,10 @@ Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 Source4:        macros.hyprland
 Source5:        hyprpm.1
 Source6:        start-hyprland.1
+# systemd session integration (activates graphical-session.target)
+Source7:        hyprland-session.target
+Source8:        hyprland-session-shutdown.target
+Source9:        hyprland-session.sh
 # Fix cursor black box on rotated screens
 Patch0:         6b2c08d3e89b1cb6f9e609664915236bbe5115da.diff
 Patch1:         climits-error.diff
@@ -189,8 +193,17 @@ install -Dpm644 %{SOURCE4} -t %{buildroot}%{_rpmconfigdir}/macros.d
 install -Dpm644 %{SOURCE5} %{SOURCE6} -t %{buildroot}%{_mandir}/man1
 ln -s Hyprland.1 %{buildroot}%{_mandir}/man1/hyprland.1
 
+# systemd session integration
+install -Dpm644 %{SOURCE7} %{SOURCE8} -t %{buildroot}%{_userunitdir}
+install -Dpm755 %{SOURCE9} -t %{buildroot}%{_libexecdir}
+
 # Fix desktop file validation error: DesktopNames should be X-DesktopNames
 sed -i 's/^DesktopNames=/X-DesktopNames=/' %{buildroot}%{_datadir}/wayland-sessions/*.desktop
+
+# Point the desktop entry at the session wrapper so graphical-session.target
+# is activated automatically (not needed when UWSM manages the session)
+sed -i 's|Exec=.*|Exec=/usr/libexec/hyprland-session.sh|' \
+  %{buildroot}%{_datadir}/wayland-sessions/hyprland.desktop
 
 
 %check
@@ -207,6 +220,9 @@ desktop-file-validate %{buildroot}%{_datadir}/wayland-sessions/hyprland-uwsm.des
 %{_datadir}/hypr/
 %{_datadir}/wayland-sessions/hyprland.desktop
 %{_datadir}/xdg-desktop-portal/hyprland-portals.conf
+%{_userunitdir}/hyprland-session.target
+%{_userunitdir}/hyprland-session-shutdown.target
+%{_libexecdir}/hyprland-session.sh
 %{_mandir}/man1/hyprctl.1*
 %{_mandir}/man1/hyprland.1*
 %{_mandir}/man1/Hyprland.1*

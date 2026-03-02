@@ -11,7 +11,6 @@ A collection of Hyprland and related packages for Fedora:
 - **[hyprlock](https://github.com/hyprwm/hyprlock)** – Hyprland's GPU-accelerated screen locking utility.
 - **[hyprpaper](https://github.com/hyprwm/hyprpaper)** – Blazing fast Wayland wallpaper utility with IPC controls.
 - **[hyprsunset](https://github.com/hyprwm/hyprsunset)** – An application to enable a blue-light filter on Hyprland.
-- **[hyprlauncher](https://github.com/hyprwm/hyprlauncher)** – A multipurpose and versatile launcher / picker for Hyprland.
 
 ### Hyprland libraries and build dependencies
 

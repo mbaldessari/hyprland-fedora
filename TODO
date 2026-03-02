@@ -3,7 +3,7 @@
 - Fedora Review Status                               - Version - Wanted - Maintainer
 
   1. hyprutils                   -> OK (MAINTAINED?) - 0.7.1   - 0.11.0 - Jannik Müller
-  2. glaze                       -> OK (NEW)         - *       - 7.0.2  - *
+  2. glaze                       -> OK (NEW)         - *       - 7.1.0  - *
   3. hyprwayland-scanner         -> OK (MAINTAINED?) - 0.4.2   - 0.4.5  - Jannik Müller
   4. hyprland-protocols          -> OK (MAINTAINED?) - 0.4.0   - 0.7.0  - Jannik Müller
   5. hyprlang                    -> OK (MAINTAINED?) - 0.6.4   - 0.6.8  - Sandipan Roy
@@ -18,8 +18,7 @@
  15. hyprtoolkit                 -> (NEW)            - *       - 0.5.3  - *
  16. hyprpaper                   -> (ORPHANED)       - *       - 0.8.3  - *
  17. hyprland-guiutils           -> (NEW)            - *       - 0.2.1  - *
- 18. hyprlauncher                -> (NEW)            - *       - 0.1.5  - *
- 19. hyprland                    -> (ORPHANED)       - *       - 0.53.3 - Jiri Kyjovsky
+ 18. hyprland                    -> (ORPHANED)       - *       - 0.53.3 - Jiri Kyjovsky
 
  - Flagged issues
 

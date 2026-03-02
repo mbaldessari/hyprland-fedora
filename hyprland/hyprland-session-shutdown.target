@@ -1,0 +1,6 @@
+[Unit]
+Description=Shutdown running Hyprland session
+Documentation=man:systemd.special(7)
+DefaultDependencies=no
+Conflicts=graphical-session.target graphical-session-pre.target hyprland-session.target
+After=graphical-session.target graphical-session-pre.target hyprland-session.target

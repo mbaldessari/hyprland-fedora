@@ -15,6 +15,5 @@ BUILD_ORDER=(
     hyprtoolkit
     hyprpaper
     hyprland-guiutils
-    hyprlauncher
     hyprland
 )
