@@ -6,7 +6,7 @@
 
 Name:           hyprland
 Version:        0.54.0%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
-Release:        %autorelease -b1
+Release:        %autorelease -b2
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
 # hyprland: BSD-3-Clause
@@ -197,8 +197,10 @@ install -Dpm644 %{SOURCE7} %{SOURCE8} -t %{buildroot}%{_userunitdir}
 
 # Activate graphical-session.target for non-UWSM sessions so that
 # xdg-desktop-portal and other session services start automatically.
-# Hyprland already propagates environment variables to systemd/D-Bus
-# internally; the only missing piece is starting the session target.
+# the only missing piece is starting the session target. (this
+# binds to graphical-session so that xdg-dekstop-portal can start
+# even when you run start-hyprland from the linux console)
+# Note: this only works in the stock config
 sed -i '/^# exec-once = nm-applet/a\
 exec-once = systemctl --user start hyprland-session.target' \
   %{buildroot}%{_datadir}/hypr/hyprland.conf
