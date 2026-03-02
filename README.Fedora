@@ -1,0 +1,75 @@
+# Hyprland on Fedora
+
+## Starting Hyprland from the Linux Console
+
+### Quick Start
+
+To start Hyprland directly from a Linux console (TTY), simply run:
+
+```bash
+start-hyprland
+```
+
+This wrapper script provided by the Fedora package will properly initialize Hyprland with the correct environment and session management.
+
+### Session Integration and graphical-session.target
+
+The Fedora Hyprland package automatically configures proper systemd user session integration. When starting Hyprland from the Linux console, the package ensures that `graphical-session.target` is activated so that essential desktop services like `xdg-desktop-portal` and other session services start automatically.
+
+This integration is handled through:
+
+1. **Automatic configuration**: The stock Hyprland configuration (`/usr/share/hypr/hyprland.conf`) includes:
+   ```
+   exec-once = systemctl --user start hyprland-session.target
+   ```
+
+2. **Session targets**: The package provides systemd user service files:
+   - `hyprland-session.target` - Binds to `graphical-session.target`
+   - `hyprland-session-shutdown.target` - Handles clean session shutdown
+
+### What This Means for Users
+
+- **Portal services**: Applications that need file dialogs, screen sharing, or other desktop portal services will work correctly
+- **Session management**: Your session will be properly tracked by systemd
+- **Service activation**: Desktop services will start automatically when needed
+- **Clean shutdown**: Services will be properly stopped when you exit Hyprland
+
+### Alternative: Display Manager Integration
+
+For a more traditional desktop experience, consider installing the UWSM integration:
+
+```bash
+sudo dnf install hyprland-uwsm
+```
+
+This allows you to select Hyprland from your display manager's session menu and provides even better systemd session management through the Universal Wayland Session Manager.
+
+### Troubleshooting
+
+If you experience issues with desktop services not starting:
+
+1. **Check if the target is active**:
+   ```bash
+   systemctl --user is-active graphical-session.target
+   ```
+
+2. **Verify session configuration**: Ensure your Hyprland config includes the session target start command. If you use a custom config, you may need to add:
+   ```
+   exec-once = systemctl --user start hyprland-session.target
+   ```
+
+3. **Check portal status**:
+   ```bash
+   systemctl --user status xdg-desktop-portal
+   ```
+
+4. **Manual activation** (if needed):
+   ```bash
+   systemctl --user start hyprland-session.target
+   ```
+
+### Notes
+
+- This automatic session integration only works with the stock configuration or configurations that include the `exec-once` directive
+- The session integration is specifically designed for non-UWSM sessions (when not using hyprland-uwsm)
+- If you're using a custom Hyprland configuration, make sure to preserve or add the session target activation

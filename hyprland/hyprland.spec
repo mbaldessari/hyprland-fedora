@@ -195,6 +195,9 @@ ln -s Hyprland.1 %{buildroot}%{_mandir}/man1/hyprland.1
 # systemd session integration
 install -Dpm644 %{SOURCE7} %{SOURCE8} -t %{buildroot}%{_userunitdir}
 
+# Install Fedora-specific documentation
+install -Dpm644 README.Fedora -t %{buildroot}%{_pkgdocdir}
+
 # Activate graphical-session.target for non-UWSM sessions so that
 # xdg-desktop-portal and other session services start automatically.
 # the only missing piece is starting the session target. (this
@@ -216,6 +219,7 @@ desktop-file-validate %{buildroot}%{_datadir}/wayland-sessions/hyprland-uwsm.des
 
 %files
 %license LICENSE
+%doc %{_pkgdocdir}/README.Fedora
 %{_bindir}/[Hh]yprland
 %{_bindir}/hyprctl
 %{_bindir}/hyprpm
