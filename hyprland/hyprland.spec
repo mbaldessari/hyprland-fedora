@@ -5,7 +5,7 @@
 %global commit_date Sat Dec 06 00:42:26 2025
 
 Name:           hyprland
-Version:        0.54.0%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
+Version:        0.54.1%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
 Release:        %autorelease -b2
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
@@ -30,9 +30,6 @@ Source6:        start-hyprland.1
 # systemd session integration (activates graphical-session.target)
 Source7:        hyprland-session.target
 Source8:        hyprland-session-shutdown.target
-# Fix cursor black box on rotated screens
-Patch0:         6b2c08d3e89b1cb6f9e609664915236bbe5115da.diff
-Patch1:         climits-error.diff
 
 %{lua:
 hyprdeps = {
