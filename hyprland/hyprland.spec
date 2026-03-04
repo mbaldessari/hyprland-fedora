@@ -6,7 +6,7 @@
 
 Name:           hyprland
 Version:        0.54.1%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
-Release:        %autorelease -b2
+Release:        %autorelease -b1
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
 # hyprland: BSD-3-Clause
@@ -30,6 +30,7 @@ Source6:        start-hyprland.1
 # systemd session integration (activates graphical-session.target)
 Source7:        hyprland-session.target
 Source8:        hyprland-session-shutdown.target
+Source9:        README.Fedora
 
 %{lua:
 hyprdeps = {
@@ -193,7 +194,7 @@ ln -s Hyprland.1 %{buildroot}%{_mandir}/man1/hyprland.1
 install -Dpm644 %{SOURCE7} %{SOURCE8} -t %{buildroot}%{_userunitdir}
 
 # Install Fedora-specific documentation
-install -Dpm644 README.Fedora -t %{buildroot}%{_pkgdocdir}
+install -Dpm644 %{SOURCE9} -t %{buildroot}%{_pkgdocdir}
 
 # Activate graphical-session.target for non-UWSM sessions so that
 # xdg-desktop-portal and other session services start automatically.
