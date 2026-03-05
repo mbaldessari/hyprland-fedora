@@ -23,6 +23,7 @@ MOCK_CONFIG="fedora-$(rpm --eval '%{fedora}')-$(uname -m)"
 RESULT_DIR="${SCRIPT_DIR}/_results"
 START_FROM=""
 STOP_ON_ERROR=false
+OFFLINE=false
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -30,6 +31,7 @@ while [[ $# -gt 0 ]]; do
         --resultdir)   RESULT_DIR="$2";  shift 2 ;;
         --start-from)  START_FROM="$2";  shift 2 ;;
         --stop-on-error) STOP_ON_ERROR=true; shift ;;
+        --offline)     OFFLINE=true; shift ;;
         -h|--help)
             sed -n '2,/^$/s/^# \?//p' "$0"
             exit 0
@@ -153,8 +155,12 @@ for pkg in "${BUILD_ORDER[@]}"; do
     info "  Cleaning mock chroot..."
     mock --scrub=chroot -r "$MOCK_CFG_OVERLAY" >> "${LOGS_DIR}/${pkg}-mock-clean.log" 2>&1 || true
 
+    MOCK_EXTRA_ARGS=()
+    if $OFFLINE; then MOCK_EXTRA_ARGS+=(--offline); fi
+
     info "  mock --rebuild (this may take a while)..."
     if ! mock -r "$MOCK_CFG_OVERLAY" \
+            "${MOCK_EXTRA_ARGS[@]}" \
             --resultdir="$PKG_RESULT" \
             --rebuild "$SRPM_PATH" \
             >> "${LOGS_DIR}/${pkg}-mock.log" 2>&1; then
