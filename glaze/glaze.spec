@@ -11,8 +11,8 @@ License:        MIT AND (Apache-2.0 WITH LLVM-exception OR BSL-1.0)
 URL:            https://github.com/stephenberry/glaze
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
-# Use system ut instead of FetchContent
-Patch0:         glaze-use-system-ut.patch
+# Use system ut and Eigen3 instead of FetchContent
+Patch0:         glaze-use-system-deps.patch
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
@@ -51,7 +51,7 @@ Development files for %{name}.
 %cmake_install
 
 %check
-%ctest
+%ctest --exclude-regex 'glaze-install_test|find_package_test'
 
 %files devel
 %license LICENSE

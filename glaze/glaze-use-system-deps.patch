@@ -1,0 +1,59 @@
+diff --color -ruN a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+--- a/tests/CMakeLists.txt	2026-03-05 18:43:12.522553772 +0100
++++ b/tests/CMakeLists.txt	2026-03-05 18:43:48.515198630 +0100
+@@ -1,19 +1,6 @@
+ include(FetchContent)
+ 
+-FetchContent_Declare(
+-  ut
+-  GIT_REPOSITORY https://github.com/openalgz/ut
+-  GIT_TAG v1.1.0
+-  GIT_SHALLOW TRUE
+-)
+-
+-message(STATUS "Fetching dependencies...")
+-set_directory_properties(PROPERTIES EXCLUDE_FROM_ALL TRUE)
+-set(CMAKE_SKIP_INSTALL_RULES ON CACHE BOOL "" FORCE)
+-FetchContent_MakeAvailable(ut)
+-set(CMAKE_SKIP_INSTALL_RULES OFF CACHE BOOL "" FORCE)
+-set_directory_properties(PROPERTIES EXCLUDE_FROM_ALL FALSE)
+-message(STATUS "...finished fetching dependencies.")
++find_package(ut REQUIRED)
+ 
+ # Setup ASIO dependency (used by networking tests)
+ # This must be defined here before glz_test_common/glz_test_exceptions
+diff --color -ruN a/tests/eigen_test/CMakeLists.txt b/tests/eigen_test/CMakeLists.txt
+--- a/tests/eigen_test/CMakeLists.txt	2026-03-05 18:43:12.523263628 +0100
++++ b/tests/eigen_test/CMakeLists.txt	2026-03-05 18:43:31.013068029 +0100
+@@ -1,30 +1,7 @@
+ project(eigen_test)
+ 
+ add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
+-
+-find_package (Eigen3 3.4 QUIET)
+-if(NOT Eigen3_FOUND)
+-  FetchContent_Declare(
+-    Eigen3
+-    GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+-    GIT_TAG 3.4.0
+-    GIT_SHALLOW TRUE
+-    SOURCE_SUBDIR cmake # no CMakeLists.txt in cmake, so this turns off configure
+-    # hack: https://stackoverflow.com/questions/77210209/how-to-prevent-eigen-targets-to-show-up-in-the-main-app-in-a-cmake-project
+-  )
+-
+-  set(EIGEN_BUILD_DOC OFF CACHE BOOL "Don't build Eigen documentation")
+-  set(EIGEN_BUILD_PKGCONFIG OFF CACHE BOOL "Don't build pkg-config files")
+-  set(EIGEN_BUILD_TESTING OFF CACHE BOOL "Don't build Eigen tests")
+-  
+-  FetchContent_MakeAvailable(Eigen3)
+-  
+-  if(NOT TARGET Eigen3::Eigen)
+-    add_library(Eigen3 INTERFACE IMPORTED GLOBAL)
+-    add_library(Eigen3::Eigen ALIAS Eigen3)
+-    target_include_directories(Eigen3 INTERFACE "${eigen3_SOURCE_DIR}")
+-  endif()
+-endif()
++find_package(Eigen3 REQUIRED)
+ 
+ target_link_libraries(${PROJECT_NAME} PRIVATE glz_test_common Eigen3::Eigen)
+ 
