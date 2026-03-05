@@ -1,0 +1,82 @@
+name: Check for upstream updates
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for upstream updates
+        run: |
+          outdated=0
+          printf "%-35s %-12s  %-12s  %s\n" "PACKAGE" "CURRENT" "UPSTREAM" "STATUS"
+          printf '%s\n' "$(printf '%.0s-' {1..85})"
+
+          for specfile in *//*.spec; do
+            [ -f "$specfile" ] || continue
+            dir="$(dirname "$specfile")"
+            [[ "$dir" == *"_review"* ]] && continue
+
+            pkg_dir="$(basename "$dir")"
+            raw_version="$(grep -m1 '^Version:' "$specfile" | awk '{print $2}')"
+            url="$(grep -m1 '^URL:' "$specfile" | awk '{print $2}')"
+
+            # Skip specs without a GitHub URL
+            [[ ! "$url" =~ github\.com ]] && continue
+
+            owner="$(echo "$url" | sed -E 's|https?://github\.com/([^/]+)/.*|\1|')"
+            repo="$(echo "$url" | sed -E 's|https?://github\.com/[^/]+/([^/]+).*|\1|')"
+
+            # Clean version: strip RPM snapshot suffixes and macros
+            current_version="$(echo "$raw_version" | sed -E 's/\^.*//; s/~.*//')"
+            if [[ "$current_version" == *"%"* ]]; then
+              current_version="${current_version%%%*}"
+            fi
+
+            # Query GitHub API for latest release
+            api_url="https://api.github.com/repos/${owner}/${repo}/releases/latest"
+            response="$(curl -sf -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "$api_url" 2>/dev/null)" || true
+
+            latest_tag=""
+            if [[ -n "$response" ]]; then
+              latest_tag="$(echo "$response" | jq -r '.tag_name // empty' 2>/dev/null)"
+            fi
+
+            # Fallback to tags
+            if [[ -z "$latest_tag" ]]; then
+              tags_url="https://api.github.com/repos/${owner}/${repo}/tags?per_page=1"
+              response="$(curl -sf -H "Accept: application/vnd.github.v3+json" \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                "$tags_url" 2>/dev/null)" || true
+              if [[ -n "$response" ]]; then
+                latest_tag="$(echo "$response" | jq -r '.[0].name // empty' 2>/dev/null)"
+              fi
+            fi
+
+            if [[ -z "$latest_tag" ]]; then
+              printf "%-35s %-12s  %-12s  %s\n" "$pkg_dir" "$current_version" "???" "Could not query upstream"
+              continue
+            fi
+
+            latest_version="${latest_tag#v}"
+
+            if [ "$(printf '%s\n%s' "$current_version" "$latest_version" | sort -V | head -n1)" = "$current_version" ] && [ "$current_version" != "$latest_version" ]; then
+              printf "%-35s %-12s  %-12s  %s\n" "$pkg_dir" "$current_version" "$latest_version" "UPDATE AVAILABLE"
+              outdated=1
+            else
+              printf "%-35s %-12s  %-12s  %s\n" "$pkg_dir" "$current_version" "$latest_version" "up to date"
+            fi
+          done
+
+          if [ "$outdated" -eq 1 ]; then
+            echo ""
+            echo "::error::One or more packages have upstream updates available"
+            exit 1
+          fi
