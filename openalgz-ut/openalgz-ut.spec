@@ -9,6 +9,10 @@ License:        MIT
 URL:            https://github.com/openalgz/ut
 Source:         %{url}/archive/v%{version}/ut-%{version}.tar.gz
 
+# Fix utConfig.cmake using PROJECT_NAME instead of hardcoded "ut",
+# which breaks find_package(ut) when called from other projects.
+Patch0:         openalgz-ut-fix-config.patch
+
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
 

@@ -22,12 +22,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MOCK_CONFIG="fedora-$(rpm --eval '%{fedora}')-$(uname -m)"
 RESULT_DIR="${SCRIPT_DIR}/_results"
 START_FROM=""
+STOP_ON_ERROR=false
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --mock-config) MOCK_CONFIG="$2"; shift 2 ;;
         --resultdir)   RESULT_DIR="$2";  shift 2 ;;
         --start-from)  START_FROM="$2";  shift 2 ;;
+        --stop-on-error) STOP_ON_ERROR=true; shift ;;
         -h|--help)
             sed -n '2,/^$/s/^# \?//p' "$0"
             exit 0
@@ -124,6 +126,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
             >> "${LOGS_DIR}/${pkg}-spectool.log" 2>&1; then
         echo "${RED}  ✗ spectool failed (see ${LOGS_DIR}/${pkg}-spectool.log)${RESET} [$(fmt_duration $(($(date +%s) - PKG_START)))]"
         FAILED+=("$pkg")
+        if $STOP_ON_ERROR; then break; fi
         continue
     fi
 
@@ -138,6 +141,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
     if [[ -z "$SRPM_PATH" || ! -f "$SRPM_PATH" ]]; then
         echo "${RED}  ✗ SRPM build failed (see ${LOGS_DIR}/${pkg}-srpm.log)${RESET} [$(fmt_duration $(($(date +%s) - PKG_START)))]"
         FAILED+=("$pkg")
+        if $STOP_ON_ERROR; then break; fi
         continue
     fi
 
@@ -156,6 +160,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
             >> "${LOGS_DIR}/${pkg}-mock.log" 2>&1; then
         echo "${RED}  ✗ mock build failed (see ${LOGS_DIR}/${pkg}-mock.log)${RESET} [$(fmt_duration $(($(date +%s) - PKG_START)))]"
         FAILED+=("$pkg")
+        if $STOP_ON_ERROR; then break; fi
         continue
     fi
 

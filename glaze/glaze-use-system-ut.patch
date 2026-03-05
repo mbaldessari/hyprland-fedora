@@ -1,8 +1,8 @@
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
-@@ -1,19 +1,4 @@
--include(FetchContent)
--
+@@ -1,19 +1,6 @@
+ include(FetchContent)
+
 -FetchContent_Declare(
 -  ut
 -  GIT_REPOSITORY https://github.com/openalgz/ut
@@ -18,6 +18,6 @@
 -set_directory_properties(PROPERTIES EXCLUDE_FROM_ALL FALSE)
 -message(STATUS "...finished fetching dependencies.")
 +find_package(ut REQUIRED)
- 
+
  # Setup ASIO dependency (used by networking tests)
  # This must be defined here before glz_test_common/glz_test_exceptions
