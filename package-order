@@ -1,5 +1,6 @@
 BUILD_ORDER=(
     hyprutils
+    openalgz-ut
     glaze
     hyprwayland-scanner
     hyprland-protocols

@@ -3,6 +3,7 @@
 - Fedora Review Status                               - Version - Wanted - Maintainer
 
   1. hyprutils                   -> OK (MAINTAINED?) - 0.7.1   - 0.11.0 - Jannik Müller
+  2. openalgz-ut                 -> OK (NEW)         - *       - 1.1.0  - *
   2. glaze                       -> OK (NEW)         - *       - 7.1.0  - *
      https://bugzilla.redhat.com/show_bug.cgi?id=2366921
   3. hyprwayland-scanner         -> OK (MAINTAINED?) - 0.4.2   - 0.4.5  - Jannik Müller
@@ -63,6 +64,7 @@
   20. hyprland-plugins            -> (NEW)            - *       - 0.53.0 - *
 - Added %check to the only two packages supporting it: hyprtoolkit and hyprwire
   glaze could support it but we'd have to package ut first: https://github.com/openalgz/ut
+- Enabled %check for glaze using the openalgz-ut package
 - Missing manpages
 - Do a rawhide build-chain run
 - Most unbundling is done

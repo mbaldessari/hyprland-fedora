@@ -11,8 +11,14 @@ License:        MIT AND (Apache-2.0 WITH LLVM-exception OR BSL-1.0)
 URL:            https://github.com/stephenberry/glaze
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
+# Use system ut instead of FetchContent
+Patch0:         glaze-use-system-ut.patch
+
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
+BuildRequires:  boost-devel
+BuildRequires:  eigen3-devel
+BuildRequires:  openalgz-ut-devel
 
 %description
 Glaze is one of the fastest JSON libraries in the world. It reads and writes
@@ -36,12 +42,16 @@ Development files for %{name}.
 %cmake \
     -Dglaze_INSTALL_CMAKEDIR=%{_datadir}/cmake/%{name} \
     -Dglaze_DISABLE_SIMD_WHEN_SUPPORTED:BOOL=ON \
-    -Dglaze_DEVELOPER_MODE:BOOL=OFF \
-    -Dglaze_ENABLE_FUZZING:BOOL=OFF
+    -Dglaze_DEVELOPER_MODE:BOOL=ON \
+    -Dglaze_ENABLE_FUZZING:BOOL=OFF \
+    -Dglaze_BUILD_NETWORKING_TESTS:BOOL=OFF
 %cmake_build
 
 %install
 %cmake_install
+
+%check
+%ctest
 
 %files devel
 %license LICENSE

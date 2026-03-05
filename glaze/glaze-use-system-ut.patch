@@ -1,0 +1,23 @@
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -1,19 +1,4 @@
+-include(FetchContent)
+-
+-FetchContent_Declare(
+-  ut
+-  GIT_REPOSITORY https://github.com/openalgz/ut
+-  GIT_TAG v1.1.0
+-  GIT_SHALLOW TRUE
+-)
+-
+-message(STATUS "Fetching dependencies...")
+-set_directory_properties(PROPERTIES EXCLUDE_FROM_ALL TRUE)
+-set(CMAKE_SKIP_INSTALL_RULES ON CACHE BOOL "" FORCE)
+-FetchContent_MakeAvailable(ut)
+-set(CMAKE_SKIP_INSTALL_RULES OFF CACHE BOOL "" FORCE)
+-set_directory_properties(PROPERTIES EXCLUDE_FROM_ALL FALSE)
+-message(STATUS "...finished fetching dependencies.")
++find_package(ut REQUIRED)
+ 
+ # Setup ASIO dependency (used by networking tests)
+ # This must be defined here before glz_test_common/glz_test_exceptions
