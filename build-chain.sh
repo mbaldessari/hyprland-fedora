@@ -19,12 +19,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# ── defaults ──────────────────────────────────────────────────────────────────
 MOCK_CONFIG="fedora-$(rpm --eval '%{fedora}')-$(uname -m)"
 RESULT_DIR="${SCRIPT_DIR}/_results"
 START_FROM=""
 
-# ── parse args ────────────────────────────────────────────────────────────────
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --mock-config) MOCK_CONFIG="$2"; shift 2 ;;
@@ -38,7 +36,6 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# ── colours ───────────────────────────────────────────────────────────────────
 if [[ -t 1 ]]; then
     BOLD=$'\e[1m'  GREEN=$'\e[32m'  RED=$'\e[31m'  CYAN=$'\e[36m'  RESET=$'\e[0m'
 else
@@ -56,12 +53,10 @@ fmt_duration() {
     else printf '%ds' "$s"; fi
 }
 
-# ── sanity checks ─────────────────────────────────────────────────────────────
 for cmd in mock rpmbuild spectool createrepo_c; do
     command -v "$cmd" &>/dev/null || die "$cmd is not installed"
 done
 
-# ── set up local repo ────────────────────────────────────────────────────────
 LOCAL_REPO="${RESULT_DIR}/local-repo"
 SRPMS_DIR="${RESULT_DIR}/srpms"
 LOGS_DIR="${RESULT_DIR}/logs"
@@ -70,7 +65,6 @@ mkdir -p "$LOCAL_REPO" "$SRPMS_DIR" "$LOGS_DIR"
 # Seed the local repo metadata so mock can reference it immediately
 createrepo_c --quiet "$LOCAL_REPO"
 
-# ── write a mock config overlay that adds the local repo ─────────────────────
 MOCK_CFG_OVERLAY="${RESULT_DIR}/hyprland-local-repo.cfg"
 cat > "$MOCK_CFG_OVERLAY" <<EOF
 include("${MOCK_CONFIG}.cfg")
@@ -91,13 +85,11 @@ info "Results dir : ${RESULT_DIR}"
 info "Local repo  : ${LOCAL_REPO}"
 echo
 
-# ── handle --start-from ──────────────────────────────────────────────────────
 SKIPPING=false
 if [[ -n "$START_FROM" ]]; then
     SKIPPING=true
 fi
 
-# ── main build loop ──────────────────────────────────────────────────────────
 TOTAL=${#BUILD_ORDER[@]}
 BUILT=0
 FAILED=()
@@ -127,7 +119,6 @@ for pkg in "${BUILD_ORDER[@]}"; do
         die "Spec file not found: ${SPEC_FILE}"
     fi
 
-    # ── download sources ──────────────────────────────────────────────────
     info "  Downloading sources..."
     if ! spectool -g -C "$SPEC_DIR" "$SPEC_FILE" \
             >> "${LOGS_DIR}/${pkg}-spectool.log" 2>&1; then
@@ -136,7 +127,6 @@ for pkg in "${BUILD_ORDER[@]}"; do
         continue
     fi
 
-    # ── build SRPM ────────────────────────────────────────────────────────
     info "  Building SRPM..."
     SRPM_OUT=$(rpmbuild -bs \
         --define "_sourcedir ${SPEC_DIR}" \
@@ -151,7 +141,6 @@ for pkg in "${BUILD_ORDER[@]}"; do
         continue
     fi
 
-    # ── mock rebuild ──────────────────────────────────────────────────────
     PKG_RESULT="${RESULT_DIR}/${pkg}"
     mkdir -p "$PKG_RESULT"
 
@@ -170,18 +159,15 @@ for pkg in "${BUILD_ORDER[@]}"; do
         continue
     fi
 
-    # ── copy RPMs to local repo and update ────────────────────────────────
     cp -n "$PKG_RESULT"/*.rpm "$LOCAL_REPO/" 2>/dev/null || true
     createrepo_c --update --quiet "$LOCAL_REPO"
 
     ok "${pkg} built successfully [$(fmt_duration $(($(date +%s) - PKG_START)))]"
 done
 
-# ── summary ───────────────────────────────────────────────────────────────────
 CHAIN_ELAPSED=$(( $(date +%s) - CHAIN_START ))
 
 echo
-echo "═══════════════════════════════════════════════════════════════"
 info "Total elapsed time: $(fmt_duration $CHAIN_ELAPSED)"
 if [[ ${#FAILED[@]} -eq 0 ]]; then
     ok "All packages built successfully!"
@@ -193,6 +179,6 @@ else
 fi
 echo
 info "All RPMs are in: ${LOCAL_REPO}"
-echo "═══════════════════════════════════════════════════════════════"
+echo ""
 
 exit ${#FAILED[@]}
