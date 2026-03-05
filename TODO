@@ -4,6 +4,7 @@
 
   1. hyprutils                   -> OK (MAINTAINED?) - 0.7.1   - 0.11.0 - Jannik Müller
   2. glaze                       -> OK (NEW)         - *       - 7.1.0  - *
+     https://bugzilla.redhat.com/show_bug.cgi?id=2366921
   3. hyprwayland-scanner         -> OK (MAINTAINED?) - 0.4.2   - 0.4.5  - Jannik Müller
   4. hyprland-protocols          -> OK (MAINTAINED?) - 0.4.0   - 0.7.0  - Jannik Müller
   5. hyprlang                    -> OK (MAINTAINED?) - 0.6.4   - 0.6.8  - Sandipan Roy
