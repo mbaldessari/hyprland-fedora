@@ -14,7 +14,7 @@ ExcludeArch:    %{ix86}
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  ninja-build
-BuildRequires:  pkgconfig(hyprutils)
+BuildRequires:  pkgconfig(hyprutils) >= 0.9.0
 BuildRequires:  pkgconfig(libffi)
 BuildRequires:  pkgconfig(pugixml)
 

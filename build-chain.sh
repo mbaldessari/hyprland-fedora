@@ -79,10 +79,26 @@ mkdir -p "$LOCAL_REPO" "$SRPMS_DIR" "$LOGS_DIR"
 createrepo_c --quiet "$LOCAL_REPO"
 
 MOCK_CFG_OVERLAY="${RESULT_DIR}/hyprland-local-repo.cfg"
+
+# When offline, avoid mock's --offline flag (which adds -C/cacheonly to dnf,
+# preventing it from reading the local file:// repo metadata).  Instead, set
+# metadata_expire=-1 so dnf never tries to refresh remote repo metadata while
+# still being able to read the local repo normally.
+OFFLINE_DNF_CONF=""
+if $OFFLINE; then
+    OFFLINE_DNF_CONF="
+[main]
+metadata_expire=-1
+"
+fi
+
 cat > "$MOCK_CFG_OVERLAY" <<EOF
 include("${MOCK_CONFIG}.cfg")
 
-config_opts['dnf.conf'] += """
+config_opts['plugin_conf']['bind_mount_enable'] = True
+config_opts['plugin_conf']['bind_mount_opts']['dirs'].append(('${LOCAL_REPO}', '${LOCAL_REPO}'))
+
+config_opts['dnf.conf'] += """${OFFLINE_DNF_CONF}
 [hyprland-local]
 name=Hyprland local build repo
 baseurl=file://${LOCAL_REPO}
@@ -90,6 +106,7 @@ enabled=1
 gpgcheck=0
 priority=1
 module_hotfixes=1
+metadata_expire=0
 """
 EOF
 
@@ -160,7 +177,6 @@ for pkg in "${BUILD_ORDER[@]}"; do
     mock --scrub=chroot -r "$MOCK_CFG_OVERLAY" >> "${LOGS_DIR}/${pkg}-mock-clean.log" 2>&1 || true
 
     MOCK_EXTRA_ARGS=()
-    if $OFFLINE; then MOCK_EXTRA_ARGS+=(--offline); fi
 
     info "  mock --rebuild (this may take a while)..."
     info "  Command: mock -r $MOCK_CFG_OVERLAY ${MOCK_EXTRA_ARGS[*]} --resultdir=$PKG_RESULT --rebuild $SRPM_PATH"
