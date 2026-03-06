@@ -64,6 +64,15 @@ done
 LOCAL_REPO="${RESULT_DIR}/local-repo"
 SRPMS_DIR="${RESULT_DIR}/srpms"
 LOGS_DIR="${RESULT_DIR}/logs"
+
+SKIPPING=false
+if [[ -n "$START_FROM" ]]; then
+    SKIPPING=true
+else
+    info "Removing previous results..."
+    rm -rf "$RESULT_DIR"
+fi
+
 mkdir -p "$LOCAL_REPO" "$SRPMS_DIR" "$LOGS_DIR"
 
 # Seed the local repo metadata so mock can reference it immediately
@@ -88,11 +97,6 @@ info "Mock config : ${MOCK_CONFIG}"
 info "Results dir : ${RESULT_DIR}"
 info "Local repo  : ${LOCAL_REPO}"
 echo
-
-SKIPPING=false
-if [[ -n "$START_FROM" ]]; then
-    SKIPPING=true
-fi
 
 TOTAL=${#BUILD_ORDER[@]}
 BUILT=0
@@ -159,6 +163,7 @@ for pkg in "${BUILD_ORDER[@]}"; do
     if $OFFLINE; then MOCK_EXTRA_ARGS+=(--offline); fi
 
     info "  mock --rebuild (this may take a while)..."
+    info "  Command: mock -r $MOCK_CFG_OVERLAY ${MOCK_EXTRA_ARGS[*]} --resultdir=$PKG_RESULT --rebuild $SRPM_PATH"
     if ! mock -r "$MOCK_CFG_OVERLAY" \
             "${MOCK_EXTRA_ARGS[@]}" \
             --resultdir="$PKG_RESULT" \
