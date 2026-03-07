@@ -32,16 +32,29 @@ and MessagePack.
 Summary:        Development files for %{name}
 BuildArch:      noarch
 Provides:       %{name}-static = %{version}-%{release}
+# The bundled Dragonbox is more recent than the version of Fedora. This is due
+# to glaze using the upstream source version. The author of Dragonbox hasn't
+# pushed another update since June 18, 2022, while pushing newer stuff on the
+# repo. Therefore glaze has to have this bundled.
+Provides:       bundled(dragonbox) = 1.1.3^20241029gitc3d81a9
 %description    devel
 Development files for %{name}.
+
+%package        doc
+Summary:        Documentation for %{name}
+BuildArch:      noarch
+
+%description    doc
+Documentation and example files for %{name}.
 
 %prep
 %autosetup -p1
 
 %build
 %cmake \
+    -DFETCHCONTENT_FULLY_DISCONNECTED:BOOL=TRUE \
+    -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=ALWAYS \
     -Dglaze_INSTALL_CMAKEDIR=%{_datadir}/cmake/%{name} \
-    -Dglaze_DISABLE_SIMD_WHEN_SUPPORTED:BOOL=ON \
     -Dglaze_DEVELOPER_MODE:BOOL=ON \
     -Dglaze_ENABLE_FUZZING:BOOL=OFF \
     -Dglaze_BUILD_NETWORKING_TESTS:BOOL=OFF
@@ -58,6 +71,11 @@ Development files for %{name}.
 %doc README.md
 %{_datadir}/cmake/%{name}/
 %{_includedir}/%{name}/
+
+%files doc
+%license LICENSE
+%doc examples/
+%doc docs/
 
 %changelog
 %autochangelog
