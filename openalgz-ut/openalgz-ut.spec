@@ -1,17 +1,13 @@
 %global debug_package %{nil}
 
 Name:           openalgz-ut
-Version:        1.1.0
+Version:        1.2.0
 Release:        %autorelease
 Summary:        A simple and fast compiling C++23 unit test library
 
 License:        MIT
 URL:            https://github.com/openalgz/ut
 Source:         %{url}/archive/v%{version}/ut-%{version}.tar.gz
-
-# Fix utConfig.cmake using PROJECT_NAME instead of hardcoded "ut",
-# which breaks find_package(ut) when called from other projects.
-Patch0:         openalgz-ut-fix-config.patch
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
