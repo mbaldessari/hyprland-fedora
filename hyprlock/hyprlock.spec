@@ -1,5 +1,5 @@
 Name:           hyprlock
-Version:        0.9.2
+Version:        0.9.3
 Release:        %autorelease -b5
 Summary:        Hyprland's GPU-accelerated screen locking utility
 # hyprlock: BSD-3-Clause
