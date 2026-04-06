@@ -1,5 +1,5 @@
 Name:           hyprgraphics
-Version:        0.5.0
+Version:        0.5.1
 Release:        %autorelease -b1
 Summary:        Hyprland graphics and image utilities library
 
@@ -16,11 +16,9 @@ BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(cairo)
 BuildRequires:  pkgconfig(hyprutils)
 BuildRequires:  pkgconfig(libjpeg)
-%if 0%{?fedora} >= 41
 BuildRequires:  pkgconfig(libjxl_cms)
 BuildRequires:  pkgconfig(libjxl_threads)
 BuildRequires:  pkgconfig(libjxl)
-%endif
 BuildRequires:  pkgconfig(libmagic)
 BuildRequires:  pkgconfig(libwebp)
 BuildRequires:  pkgconfig(pixman-1)
@@ -28,6 +26,8 @@ BuildRequires:  pkgconfig(libpng)
 BuildRequires:  pkgconfig(pangocairo)
 BuildRequires:  pkgconfig(libheif)
 BuildRequires:  pkgconfig(librsvg-2.0)
+BuildRequires:  pkgconfig(glesv2)
+BuildRequires:  pkgconfig(libdrm)
 
 %description
 A small C++ library with graphics and image utilities used across the Hyprland
