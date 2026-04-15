@@ -1,6 +1,6 @@
 Name:           hyprlock
-Version:        0.9.3
-Release:        %autorelease -b5
+Version:        0.9.4
+Release:        %autorelease -b1
 Summary:        Hyprland's GPU-accelerated screen locking utility
 # hyprlock: BSD-3-Clause
 # protocols/wlr-screencopy-unstable-v1.xml: MIT
