@@ -8,7 +8,7 @@ Summary:        A modern C++ Wayland-native GUI toolkit
 License:        BSD-3-Clause AND HPND-sell-variant
 URL:            https://github.com/hyprwm/hyprtoolkit
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
-Patch0:         compile-fix.patch
+#Patch0:         compile-fix.patch
 # https://fedoraproject.org/wiki/Changes/EncourageI686LeafRemoval
 ExcludeArch:    %{ix86}
 
