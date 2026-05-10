@@ -5,7 +5,7 @@
 %global commit_date Sat Dec 06 00:42:26 2025
 
 Name:           hyprland
-Version:        0.54.3%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
+Version:        0.55.0%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
 Release:        %autorelease -b1
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
@@ -44,6 +44,7 @@ hyprdeps = {
     "pkgconfig(gbm)",
     "pkgconfig(gio-2.0)",
     "pkgconfig(glesv2)",
+    "pkgconfig(glslang)",
     "pkgconfig(hwdata)",
     "pkgconfig(hyprcursor)",
     "pkgconfig(hyprgraphics)",
@@ -52,6 +53,7 @@ hyprdeps = {
     "pkgconfig(hyprutils)",
     "pkgconfig(hyprwayland-scanner)",
     "pkgconfig(hyprwire)",
+    "pkgconfig(lcms2)",
     "pkgconfig(libdisplay-info)",
     "pkgconfig(libdrm)",
     "pkgconfig(libinput) >= 1.28",
