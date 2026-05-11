@@ -205,9 +205,9 @@ install -Dpm644 %{SOURCE9} -t %{buildroot}%{_pkgdocdir}
 # binds to graphical-session so that xdg-dekstop-portal can start
 # even when you run start-hyprland from the linux console)
 # Note: this only works in the stock config
-sed -i '/^# exec-once = nm-applet/a\
-exec-once = systemctl --user start hyprland-session.target' \
-  %{buildroot}%{_datadir}/hypr/hyprland.conf
+# sed -i '/^# exec-once = nm-applet/a\
+# exec-once = systemctl --user start hyprland-session.target' \
+#   %{buildroot}%{_datadir}/hypr/hyprland.conf
 
 # Fix desktop file validation error: DesktopNames should be X-DesktopNames
 sed -i 's/^DesktopNames=/X-DesktopNames=/' %{buildroot}%{_datadir}/wayland-sessions/*.desktop
