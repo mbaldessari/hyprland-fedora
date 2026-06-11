@@ -3,7 +3,7 @@ diff --color -ruN a/tests/CMakeLists.txt b/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt	2026-03-05 18:43:48.515198630 +0100
 @@ -1,19 +1,6 @@
  include(FetchContent)
- 
+
 -FetchContent_Declare(
 -  ut
 -  GIT_REPOSITORY https://github.com/openalgz/ut
@@ -19,9 +19,9 @@ diff --color -ruN a/tests/CMakeLists.txt b/tests/CMakeLists.txt
 -set_directory_properties(PROPERTIES EXCLUDE_FROM_ALL FALSE)
 -message(STATUS "...finished fetching dependencies.")
 +find_package(ut REQUIRED)
- 
- # Setup ASIO dependency (used by networking tests)
- # This must be defined here before glz_test_common/glz_test_exceptions
+
+ # Setup the Asio backend (Boost / standalone / bundled) used by networking tests.
+ # Selection plus the GLZ_USE_BOOST_ASIO bridge live in cmake/glaze-asio.cmake, the
 diff --color -ruN a/tests/eigen_test/CMakeLists.txt b/tests/eigen_test/CMakeLists.txt
 --- a/tests/eigen_test/CMakeLists.txt	2026-03-05 18:43:12.523263628 +0100
 +++ b/tests/eigen_test/CMakeLists.txt	2026-03-05 18:43:31.013068029 +0100
