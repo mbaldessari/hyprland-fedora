@@ -1,7 +1,7 @@
 Name:           xdg-desktop-portal-hyprland
 Epoch:          1
-Version:        1.3.12
-Release:        %autorelease -b3
+Version:        1.4.0
+Release:        %autorelease -b1
 Summary:        XDG Desktop Portal backend for Hyprland
 
 # xdg-desktop-portal-hyprland: BSD-3-Clause
@@ -27,6 +27,7 @@ BuildRequires:  pkgconfig(libsystemd)
 BuildRequires:  pkgconfig(Qt6Widgets)
 BuildRequires:  pkgconfig(systemd)
 BuildRequires:  pkgconfig(sdbus-c++)
+BuildRequires:  pkgconfig(uuid)
 BuildRequires:  pkgconfig(wayland-client)
 BuildRequires:  pkgconfig(wayland-protocols)
 BuildRequires:  pkgconfig(wayland-scanner)

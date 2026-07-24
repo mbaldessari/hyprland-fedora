@@ -5,7 +5,7 @@
 %global commit_date Sat Dec 06 00:42:26 2025
 
 Name:           hyprland
-Version:        0.55.4%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
+Version:        0.56.0%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
 Release:        %autorelease -b1
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
@@ -56,6 +56,7 @@ hyprdeps = {
     "pkgconfig(lcms2)",
     "pkgconfig(libdisplay-info)",
     "pkgconfig(libdrm)",
+    "pkgconfig(libeis-1.0)",
     "pkgconfig(libinput) >= 1.28",
     "pkgconfig(libliftoff)",
     "pkgconfig(libseat)",
@@ -66,6 +67,7 @@ hyprdeps = {
     "pkgconfig(pangocairo)",
     "pkgconfig(pixman-1)",
     "pkgconfig(re2)",
+    "pkgconfig(readline)",
     "pkgconfig(systemd)",
     "pkgconfig(tomlplusplus)",
     "pkgconfig(uuid)",
