@@ -5,7 +5,7 @@
 %global commit_date Sat Dec 06 00:42:26 2025
 
 Name:           hyprland
-Version:        0.56.0%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
+Version:        0.56.1%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
 Release:        %autorelease -b1
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
