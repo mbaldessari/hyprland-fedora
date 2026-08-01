@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           openalgz-ut
-Version:        1.2.0
+Version:        1.2.1
 Release:        %autorelease
 Summary:        A simple and fast compiling C++23 unit test library
 
