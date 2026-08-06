@@ -5,7 +5,7 @@
 %global commit_date Sat Dec 06 00:42:26 2025
 
 Name:           hyprland
-Version:        0.56.1%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
+Version:        0.56.2%{?bumpver:^%{bumpver}.git%{hyprland_shortcommit}}
 Release:        %autorelease -b1
 Summary:        Dynamic tiling Wayland compositor that doesn't sacrifice on its looks
 
@@ -31,6 +31,10 @@ Source6:        start-hyprland.1
 Source7:        hyprland-session.target
 Source8:        hyprland-session-shutdown.target
 Source9:        README.Fedora
+
+# Drop glaze version ceiling so system glaze 8.x is accepted
+# https://github.com/hyprwm/Hyprland/commit/91f29f2
+Patch0:         glaze-8.patch
 
 %{lua:
 hyprdeps = {

@@ -1,0 +1,33 @@
+--- hyprland-source.orig/CMakeLists.txt	2026-08-05 16:14:14.000000000 +0200
++++ hyprland-source/CMakeLists.txt	2026-08-06 09:32:22.946924316 +0200
+@@ -130,7 +130,7 @@
+ find_package(OpenGL REQUIRED COMPONENTS ${GLES_VERSION})
+ find_package(glslang CONFIG REQUIRED)
+ 
+-find_package(glaze 7...<8 QUIET)
++find_package(glaze QUIET)
+ if(NOT glaze_FOUND)
+   set(GLAZE_VERSION v7.2.0)
+   message(STATUS "glaze dependency not found, retrieving ${GLAZE_VERSION} with FetchContent")
+--- hyprland-source.orig/hyprpm/CMakeLists.txt	2026-08-05 16:14:14.000000000 +0200
++++ hyprland-source/hyprpm/CMakeLists.txt	2026-08-06 09:32:22.947084779 +0200
+@@ -12,7 +12,7 @@
+ pkg_check_modules(hyprpm_deps REQUIRED IMPORTED_TARGET tomlplusplus hyprutils>=0.7.0)
+ 
+ if (NOT TARGET glaze::glaze)
+-    find_package(glaze 7...<8 QUIET)
++    find_package(glaze QUIET)
+ endif()
+ if (NOT glaze_FOUND AND NOT TARGET glaze::glaze)
+     set(GLAZE_VERSION v7.2.0)
+--- hyprland-source.orig/start/CMakeLists.txt	2026-08-05 16:14:14.000000000 +0200
++++ hyprland-source/start/CMakeLists.txt	2026-08-06 09:32:22.947150793 +0200
+@@ -12,7 +12,7 @@
+ pkg_check_modules(starthyprland_deps REQUIRED IMPORTED_TARGET hyprutils>=0.10.3)
+ 
+ if (NOT TARGET glaze::glaze)
+-    find_package(glaze 7...<8 QUIET)
++    find_package(glaze QUIET)
+ endif()
+ if (NOT glaze_FOUND AND NOT TARGET glaze::glaze)
+     set(GLAZE_VERSION v7.2.0)
