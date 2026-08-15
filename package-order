@@ -15,6 +15,7 @@ BUILD_ORDER=(
     xdg-desktop-portal-hyprland
     hyprtoolkit
     hyprpaper
+    hyprpicker
     hyprland-guiutils
     hyprland
 )

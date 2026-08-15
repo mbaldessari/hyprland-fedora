@@ -1,0 +1,29 @@
+--- hyprpicker-0.4.6/src/main.cpp.orign	2026-04-14 12:53:33.046971861 +0200
++++ hyprpicker-0.4.6/src/main.cpp	2026-04-14 12:54:18.960826222 +0200
+@@ -1,6 +1,7 @@
+ #include <cstdint>
+ #include <format>
+ #include <regex>
++#include <charconv>
+ #include <strings.h>
+ 
+ #include <iostream>
+--- hyprpicker-0.4.6/src/hyprpicker.cpp.orign	2026-04-14 12:50:55.509562404 +0200
++++ hyprpicker-0.4.6/src/hyprpicker.cpp	2026-04-14 12:53:20.340398154 +0200
+@@ -5,6 +5,7 @@
+ #include <cstddef>
+ #include <cstdio>
+ #include <format>
++#include <mutex>
+ #include <hyprutils/math/Vector2D.hpp>
+ #include <wayland-client-protocol.h>
+ #include <xkbcommon/xkbcommon-keysyms.h>
+--- hyprpicker-0.4.6/src/hyprpicker.hpp.orign	2026-04-14 12:51:07.157717904 +0200
++++ hyprpicker-0.4.6/src/hyprpicker.hpp	2026-04-14 12:51:21.092654736 +0200
+@@ -1,5 +1,6 @@
+ #pragma once
+ 
++#include <mutex>
+ #include "defines.hpp"
+ #include "helpers/LayerSurface.hpp"
+ #include "helpers/PoolBuffer.hpp"
