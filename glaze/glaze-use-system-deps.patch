@@ -1,13 +1,12 @@
-diff --color -ruN a/tests/CMakeLists.txt b/tests/CMakeLists.txt
---- a/tests/CMakeLists.txt	2026-03-05 18:43:12.522553772 +0100
-+++ b/tests/CMakeLists.txt	2026-03-05 18:43:48.515198630 +0100
+--- a/tests/CMakeLists.txt	2026-08-18 02:43:14.000000000 +0200
++++ b/tests/CMakeLists.txt	2026-08-23 12:10:06.326261351 +0200
 @@ -1,19 +1,6 @@
  include(FetchContent)
-
+ 
 -FetchContent_Declare(
 -  ut
 -  GIT_REPOSITORY https://github.com/openalgz/ut
--  GIT_TAG v1.1.0
+-  GIT_TAG v1.2.1
 -  GIT_SHALLOW TRUE
 -)
 -
@@ -19,12 +18,11 @@ diff --color -ruN a/tests/CMakeLists.txt b/tests/CMakeLists.txt
 -set_directory_properties(PROPERTIES EXCLUDE_FROM_ALL FALSE)
 -message(STATUS "...finished fetching dependencies.")
 +find_package(ut REQUIRED)
-
+ 
  # Setup the Asio backend (Boost / standalone / bundled) used by networking tests.
  # Selection plus the GLZ_USE_BOOST_ASIO bridge live in cmake/glaze-asio.cmake, the
-diff --color -ruN a/tests/eigen_test/CMakeLists.txt b/tests/eigen_test/CMakeLists.txt
---- a/tests/eigen_test/CMakeLists.txt	2026-03-05 18:43:12.523263628 +0100
-+++ b/tests/eigen_test/CMakeLists.txt	2026-03-05 18:43:31.013068029 +0100
+--- a/tests/eigen_test/CMakeLists.txt	2026-08-18 02:43:14.000000000 +0200
++++ b/tests/eigen_test/CMakeLists.txt	2026-08-23 12:10:16.007329133 +0200
 @@ -1,30 +1,7 @@
  project(eigen_test)
  
