@@ -1,5 +1,5 @@
 Name:           hyprtoolkit
-Version:        0.5.4
+Version:        0.6.0
 Release:        %autorelease
 Summary:        A modern C++ Wayland-native GUI toolkit
 
@@ -18,6 +18,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  gtest-devel
 BuildRequires:  mesa-libEGL-devel
 BuildRequires:  ninja-build
+BuildRequires:  pkgconfig(absl_flat_hash_map)
 BuildRequires:  pkgconfig(aquamarine)
 BuildRequires:  pkgconfig(egl)
 BuildRequires:  pkgconfig(gbm)
@@ -67,7 +68,7 @@ Development files for %{name}.
 %license LICENSE
 %doc README.md
 %{_libdir}/lib%{name}.so.%{version}
-%{_libdir}/lib%{name}.so.5
+%{_libdir}/lib%{name}.so.6
 
 %files devel
 %doc README.md
