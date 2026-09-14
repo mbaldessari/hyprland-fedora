@@ -1,4 +1,4 @@
-From ad3ca3a73b5d3512952660371eee65f63cefae16 Mon Sep 17 00:00:00 2001
+From 51c8b3040d17480d96cd939f09bb2ea6ae112622 Mon Sep 17 00:00:00 2001
 From: Michele Baldessari <mbaldess@redhat.com>
 Date: Mon, 14 Sep 2026 16:54:29 +0200
 Subject: [PATCH 3/3] feat: implement org.freedesktop.impl.portal.Clipboard
@@ -39,9 +39,9 @@ so xdg-desktop-portal knows to route clipboard operations through this
 backend.
 ---
  hyprland.portal              |   2 +-
- src/portals/InputCapture.cpp | 259 +++++++++++++++++++++++++++++++++++
- src/portals/InputCapture.hpp |  33 +++++
- 3 files changed, 293 insertions(+), 1 deletion(-)
+ src/portals/InputCapture.cpp | 296 ++++++++++++++++++++++++++++++++++-
+ src/portals/InputCapture.hpp |  36 ++++-
+ 3 files changed, 327 insertions(+), 7 deletions(-)
 
 diff --git a/hyprland.portal b/hyprland.portal
 index cbaafa8..2433957 100644
@@ -54,7 +54,7 @@ index cbaafa8..2433957 100644
 +Interfaces=org.freedesktop.impl.portal.Screenshot;org.freedesktop.impl.portal.ScreenCast;org.freedesktop.impl.portal.GlobalShortcuts;org.freedesktop.impl.portal.InputCapture;org.freedesktop.impl.portal.Clipboard;
  UseIn=wlroots;Hyprland;sway;Wayfire;river;
 diff --git a/src/portals/InputCapture.cpp b/src/portals/InputCapture.cpp
-index dadf9a3..31f61d1 100644
+index dadf9a3..d3215de 100644
 --- a/src/portals/InputCapture.cpp
 +++ b/src/portals/InputCapture.cpp
 @@ -16,11 +16,14 @@
@@ -72,6 +72,17 @@ index dadf9a3..31f61d1 100644
  static int32_t logicalSize(uint32_t size, double scale) {
      if (scale <= 0.0)
          return static_cast<int32_t>(size);
+@@ -204,8 +207,8 @@ CInputCapturePortal::CInputCapturePortal(SP<CCHyprlandInputCaptureManagerV1> mgr
+                     return onCreateSession(o1, o2, s1, s2, m);
+                 }),
+             sdbus::registerMethod("CreateSession2")
+-                .implementedAs([this](sdbus::ObjectPath o1, sdbus::ObjectPath o2, std::string s1, std::string s2, std::unordered_map<std::string, sdbus::Variant> m) {
+-                    return onCreateSession2(o1, o2, s1, s2, m);
++                .implementedAs([this](sdbus::ObjectPath o1, std::string s1, std::unordered_map<std::string, sdbus::Variant> m) {
++                    return onCreateSession2(o1, s1, m);
+                 }),
+             sdbus::registerMethod("Start")
+                 .implementedAs([this](sdbus::ObjectPath o1, sdbus::ObjectPath o2, std::string s1, std::string s2, std::unordered_map<std::string, sdbus::Variant> m) {
 @@ -236,6 +239,27 @@ CInputCapturePortal::CInputCapturePortal(SP<CCHyprlandInputCaptureManagerV1> mgr
              sdbus::registerSignal("ZonesChanged").withParameters<sdbus::ObjectPath, std::unordered_map<std::string, sdbus::Variant>>())
          .forInterface(INTERFACE_NAME);
@@ -100,7 +111,66 @@ index dadf9a3..31f61d1 100644
      Debug::log(LOG, "[input-capture] init successful");
  }
  
-@@ -609,3 +633,238 @@ void CInputCapturePortal::disable(sdbus::ObjectPath sessionHandle) {
+@@ -288,14 +312,28 @@ dbUasv CInputCapturePortal::onCreateSession(sdbus::ObjectPath requestHandle, sdb
+     return doCreateSession(requestHandle, sessionHandle, appID, parentWindow, options, true);
+ }
+ 
+-dbUasv CInputCapturePortal::onCreateSession2(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
+-                                             std::unordered_map<std::string, sdbus::Variant> options) {
+-    return doCreateSession(requestHandle, sessionHandle, appID, parentWindow, options, false);
++std::unordered_map<std::string, sdbus::Variant>
++CInputCapturePortal::onCreateSession2(sdbus::ObjectPath sessionHandle, std::string appID,
++                                      std::unordered_map<std::string, sdbus::Variant> options) {
++    Debug::log(LOG, "[input-capture] CreateSession2:");
++    Debug::log(LOG, "[input-capture]  | {}", sessionHandle.c_str());
++    Debug::log(LOG, "[input-capture]  | appid: {}", appID);
++
++    std::string sessionId = "input-capture-" + std::to_string(m_sessionCounter++);
++    Debug::log(LOG, "[input-capture]  | sessionId : {}", sessionId);
++
++    const std::shared_ptr<SSession> session =
++        std::make_shared<SSession>(sdbus::ObjectPath{"/"}, sessionHandle, sessionId, 0, m_sState.manager->sendCreateSession(sessionId.c_str()));
++
++    m_sessions.emplace(sessionHandle, session);
++
++    return {};
+ }
+ 
+ dbUasv CInputCapturePortal::onStart(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
+                                     std::unordered_map<std::string, sdbus::Variant> options) {
+     Debug::log(LOG, "[input-capture] Start session:");
++    Debug::log(LOG, "[input-capture]  | {}", requestHandle.c_str());
+     Debug::log(LOG, "[input-capture]  | {}", sessionHandle.c_str());
+     Debug::log(LOG, "[input-capture]  | appid: {}", appID);
+ 
+@@ -308,6 +346,18 @@ dbUasv CInputCapturePortal::onStart(sdbus::ObjectPath requestHandle, sdbus::Obje
+         return {1, {}};
+     }
+ 
++    uint32_t capabilities = 0;
++    if (options.contains("capabilities")) {
++        try {
++            capabilities = options["capabilities"].get<uint32_t>();
++        } catch (std::exception& e) {
++            Debug::log(WARN, "[input-capture] Start: invalid capabilities: {}", e.what());
++            return {1, {}};
++        }
++    }
++    session->capabilities = capabilities;
++    Debug::log(LOG, "[input-capture]  | capabilities: {}", capabilities);
++
+     session->state = SESSION_STATE_STARTED;
+ 
+     if (session->clipboardRequested) {
+@@ -316,6 +366,7 @@ dbUasv CInputCapturePortal::onStart(sdbus::ObjectPath requestHandle, sdbus::Obje
+     }
+ 
+     std::unordered_map<std::string, sdbus::Variant> results;
++    results["capabilities"]     = sdbus::Variant{(uint32_t)3};
+     results["clipboard_enabled"] = sdbus::Variant{session->clipboardEnabled};
+     return {0, results};
+ }
+@@ -609,3 +660,238 @@ void CInputCapturePortal::disable(sdbus::ObjectPath sessionHandle) {
      std::unordered_map<std::string, sdbus::Variant> options;
      m_pObject->emitSignal("Disabled").onInterface(INTERFACE_NAME).withArguments(sessionHandle, options);
  }
@@ -340,7 +410,7 @@ index dadf9a3..31f61d1 100644
 +    return sdbus::UnixFd{readEnd};
 +}
 diff --git a/src/portals/InputCapture.hpp b/src/portals/InputCapture.hpp
-index b5ac90e..cc799fb 100644
+index b5ac90e..a3a9eba 100644
 --- a/src/portals/InputCapture.hpp
 +++ b/src/portals/InputCapture.hpp
 @@ -1,9 +1,12 @@
@@ -375,7 +445,7 @@ index b5ac90e..cc799fb 100644
          //
          std::unique_ptr<SDBusRequest>             request;
          std::unique_ptr<SDBusSession>             session;
-@@ -66,6 +81,24 @@ class CInputCapturePortal {
+@@ -66,10 +81,29 @@ class CInputCapturePortal {
      uint                            m_lastZoneSet      = 1;
      uint32_t                        m_barrierIdCounter = 1;
  
@@ -400,6 +470,12 @@ index b5ac90e..cc799fb 100644
      //
      dbUasv        onCreateSession(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
                                    std::unordered_map<std::string, sdbus::Variant> options);
+-    dbUasv        onCreateSession2(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
++    std::unordered_map<std::string, sdbus::Variant>
++                  onCreateSession2(sdbus::ObjectPath sessionHandle, std::string appID,
+                                    std::unordered_map<std::string, sdbus::Variant> options);
+     dbUasv        onStart(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
+                           std::unordered_map<std::string, sdbus::Variant> options);
 -- 
 2.55.0
 
