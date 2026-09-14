@@ -15,7 +15,7 @@ Patch0:         0001-feat-add-wlr-data-control-protocol-binding-and-wl_se.patch
 Patch1:         0002-feat-upgrade-InputCapture-portal-to-version-2.patch
 Patch3:         0003-feat-implement-org.freedesktop.impl.portal.Clipboard.patch
 
-BuildRequires:  cmake
+BuildRequires:  meson
 BuildRequires:  gcc-c++
 BuildRequires:  systemd-rpm-macros
 
@@ -61,12 +61,12 @@ screen sharing and other system services.
 
 
 %build
-%cmake -DCMAKE_BUILD_TYPE=Release
-%cmake_build
+%meson
+%meson_build
 
 
 %install
-%cmake_install
+%meson_install
 install -Dpm644 %{SOURCE1} -t %{buildroot}%{_mandir}/man1
 
 
