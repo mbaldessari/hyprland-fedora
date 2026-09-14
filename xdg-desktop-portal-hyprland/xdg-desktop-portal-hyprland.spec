@@ -1,7 +1,7 @@
 Name:           xdg-desktop-portal-hyprland
 Epoch:          1
 Version:        1.4.1
-Release:        %autorelease -b2
+Release:        %autorelease -b3
 Summary:        XDG Desktop Portal backend for Hyprland
 
 # xdg-desktop-portal-hyprland: BSD-3-Clause
