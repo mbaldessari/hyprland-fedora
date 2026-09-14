@@ -1,7 +1,7 @@
 Name:           xdg-desktop-portal-hyprland
 Epoch:          1
 Version:        1.4.1
-Release:        %autorelease -b1
+Release:        %autorelease -b2
 Summary:        XDG Desktop Portal backend for Hyprland
 
 # xdg-desktop-portal-hyprland: BSD-3-Clause
@@ -11,6 +11,9 @@ License:        BSD-3-Clause AND HPND-sell-variant AND MIT
 URL:            https://github.com/hyprwm/xdg-desktop-portal-hyprland
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 Source1:        hyprland-share-picker.1
+Patch0:         0001-feat-add-wlr-data-control-protocol-binding-and-wl_se.patch
+Patch1:         0002-feat-upgrade-InputCapture-portal-to-version-2.patch
+Patch3:         0003-feat-implement-org.freedesktop.impl.portal.Clipboard.patch
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++

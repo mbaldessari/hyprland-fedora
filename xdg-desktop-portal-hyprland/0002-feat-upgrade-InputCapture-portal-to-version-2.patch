@@ -1,0 +1,199 @@
+From 820fb5ce48600273ae84a8d8717cd574d1c886d6 Mon Sep 17 00:00:00 2001
+From: Michele Baldessari <mbaldess@redhat.com>
+Date: Mon, 14 Sep 2026 16:46:35 +0200
+Subject: [PATCH 2/3] feat: upgrade InputCapture portal to version 2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Implement the two-phase session lifecycle required for clipboard support
+on InputCapture sessions.
+
+Version 1's CreateSession atomically creates and starts the session,
+leaving no window to call RequestClipboard. Version 2 introduces:
+
+- CreateSession2: creates the session in INIT state without starting it
+- Start: transitions the session to STARTED state, reports whether
+  clipboard was enabled
+
+The session now tracks its state (INIT → STARTED → ACTIVE → STARTED)
+and clipboard request/enable flags. The existing CreateSession method
+is preserved for backward compatibility, immediately transitioning to
+STARTED state.
+
+State tracking in activate/deactivate ensures clipboard access can be
+gated on the session being in ACTIVE state (cursor has crossed a barrier
+to the remote machine).
+---
+ src/portals/InputCapture.cpp | 63 +++++++++++++++++++++++++++++++++---
+ src/portals/InputCapture.hpp | 17 ++++++++++
+ 2 files changed, 75 insertions(+), 5 deletions(-)
+
+diff --git a/src/portals/InputCapture.cpp b/src/portals/InputCapture.cpp
+index 1be6ee7..dadf9a3 100644
+--- a/src/portals/InputCapture.cpp
++++ b/src/portals/InputCapture.cpp
+@@ -203,6 +203,14 @@ CInputCapturePortal::CInputCapturePortal(SP<CCHyprlandInputCaptureManagerV1> mgr
+                 .implementedAs([this](sdbus::ObjectPath o1, sdbus::ObjectPath o2, std::string s1, std::string s2, std::unordered_map<std::string, sdbus::Variant> m) {
+                     return onCreateSession(o1, o2, s1, s2, m);
+                 }),
++            sdbus::registerMethod("CreateSession2")
++                .implementedAs([this](sdbus::ObjectPath o1, sdbus::ObjectPath o2, std::string s1, std::string s2, std::unordered_map<std::string, sdbus::Variant> m) {
++                    return onCreateSession2(o1, o2, s1, s2, m);
++                }),
++            sdbus::registerMethod("Start")
++                .implementedAs([this](sdbus::ObjectPath o1, sdbus::ObjectPath o2, std::string s1, std::string s2, std::unordered_map<std::string, sdbus::Variant> m) {
++                    return onStart(o1, o2, s1, s2, m);
++                }),
+             sdbus::registerMethod("GetZones").implementedAs([this](sdbus::ObjectPath o1, sdbus::ObjectPath o2, std::string s, std::unordered_map<std::string, sdbus::Variant> m) {
+                 return onGetZones(o1, o2, s, m);
+             }),
+@@ -221,7 +229,7 @@ CInputCapturePortal::CInputCapturePortal(SP<CCHyprlandInputCaptureManagerV1> mgr
+                 return onConnectToEIS(o, s, m);
+             }),
+             sdbus::registerProperty("SupportedCapabilities").withGetter([] { return (uint32_t)(1 | 2); }),
+-            sdbus::registerProperty("version").withGetter([] { return (uint32_t)(1); }),
++            sdbus::registerProperty("version").withGetter([] { return (uint32_t)(2); }),
+             sdbus::registerSignal("Activated").withParameters<sdbus::ObjectPath, std::unordered_map<std::string, sdbus::Variant>>(),
+             sdbus::registerSignal("Disabled").withParameters<sdbus::ObjectPath, std::unordered_map<std::string, sdbus::Variant>>(),
+             sdbus::registerSignal("Deactivated").withParameters<sdbus::ObjectPath, std::unordered_map<std::string, sdbus::Variant>>(),
+@@ -238,9 +246,9 @@ void complete(sdbus::MethodCall& call) {
+     reply.send();
+ }
+ 
+-dbUasv CInputCapturePortal::onCreateSession(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
+-                                            std::unordered_map<std::string, sdbus::Variant> options) {
+-    Debug::log(LOG, "[input-capture] New session:");
++dbUasv CInputCapturePortal::doCreateSession(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
++                                            std::unordered_map<std::string, sdbus::Variant> options, bool startImmediately) {
++    Debug::log(LOG, "[input-capture] New session (v{}):", startImmediately ? 1 : 2);
+ 
+     uint32_t capabilities = 0;
+     if (options.contains("capabilities")) {
+@@ -264,6 +272,9 @@ dbUasv CInputCapturePortal::onCreateSession(sdbus::ObjectPath requestHandle, sdb
+     const std::shared_ptr<SSession> session =
+         std::make_shared<SSession>(requestHandle, sessionHandle, sessionId, capabilities, m_sState.manager->sendCreateSession(sessionId.c_str()));
+ 
++    if (startImmediately)
++        session->state = SESSION_STATE_STARTED;
++
+     m_sessions.emplace(sessionHandle, session);
+ 
+     std::unordered_map<std::string, sdbus::Variant> results;
+@@ -272,6 +283,43 @@ dbUasv CInputCapturePortal::onCreateSession(sdbus::ObjectPath requestHandle, sdb
+     return {0, results};
+ }
+ 
++dbUasv CInputCapturePortal::onCreateSession(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
++                                            std::unordered_map<std::string, sdbus::Variant> options) {
++    return doCreateSession(requestHandle, sessionHandle, appID, parentWindow, options, true);
++}
++
++dbUasv CInputCapturePortal::onCreateSession2(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
++                                             std::unordered_map<std::string, sdbus::Variant> options) {
++    return doCreateSession(requestHandle, sessionHandle, appID, parentWindow, options, false);
++}
++
++dbUasv CInputCapturePortal::onStart(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
++                                    std::unordered_map<std::string, sdbus::Variant> options) {
++    Debug::log(LOG, "[input-capture] Start session:");
++    Debug::log(LOG, "[input-capture]  | {}", sessionHandle.c_str());
++    Debug::log(LOG, "[input-capture]  | appid: {}", appID);
++
++    if (!sessionValid(sessionHandle))
++        return {1, {}};
++
++    auto& session = m_sessions[sessionHandle];
++    if (session->state != SESSION_STATE_INIT) {
++        Debug::log(WARN, "[input-capture] Start called on session not in INIT state");
++        return {1, {}};
++    }
++
++    session->state = SESSION_STATE_STARTED;
++
++    if (session->clipboardRequested) {
++        session->clipboardEnabled = true;
++        Debug::log(LOG, "[input-capture]  | clipboard enabled");
++    }
++
++    std::unordered_map<std::string, sdbus::Variant> results;
++    results["clipboard_enabled"] = sdbus::Variant{session->clipboardEnabled};
++    return {0, results};
++}
++
+ CInputCapturePortal::SSession::SSession(sdbus::ObjectPath requestHandle_, sdbus::ObjectPath sessionHandle_, std::string sessionId_, uint32_t capabilities_, wl_proxy* proxy) :
+     requestHandle(requestHandle_), sessionHandle(sessionHandle_), sessionId(sessionId_), capabilities(capabilities_), whandle(std::make_unique<CCHyprlandInputCaptureV1>(proxy)) {
+ 
+@@ -531,7 +579,9 @@ void CInputCapturePortal::activate(sdbus::ObjectPath sessionHandle, uint32_t act
+     if (!sessionValid(sessionHandle))
+         return;
+ 
+-    const auto&    session         = m_sessions[sessionHandle];
++    const auto& session = m_sessions[sessionHandle];
++    session->state      = SESSION_STATE_ACTIVE;
++
+     const auto     mappedBarrierId = session->barrierIdMap.find(borderId);
+     const uint32_t clientBarrierId = mappedBarrierId != session->barrierIdMap.end() ? mappedBarrierId->second : borderId;
+ 
+@@ -547,6 +597,9 @@ void CInputCapturePortal::activate(sdbus::ObjectPath sessionHandle, uint32_t act
+ }
+ 
+ void CInputCapturePortal::deactivate(sdbus::ObjectPath sessionHandle, uint32_t activationId) {
++    if (sessionValid(sessionHandle))
++        m_sessions[sessionHandle]->state = SESSION_STATE_STARTED;
++
+     std::unordered_map<std::string, sdbus::Variant> options;
+     options["activation_id"] = sdbus::Variant{activationId};
+     m_pObject->emitSignal("Deactivated").onInterface(INTERFACE_NAME).withArguments(sessionHandle, options);
+diff --git a/src/portals/InputCapture.hpp b/src/portals/InputCapture.hpp
+index 8391e4b..b5ac90e 100644
+--- a/src/portals/InputCapture.hpp
++++ b/src/portals/InputCapture.hpp
+@@ -12,6 +12,13 @@ enum ClientStatus : uint8_t {
+     CLIENT_STATUS_STOPPED    //Can no longer be activated
+ };
+ 
++enum SessionState : uint8_t {
++    SESSION_STATE_INIT,
++    SESSION_STATE_STARTED,
++    SESSION_STATE_ACTIVE,
++    SESSION_STATE_CLOSED,
++};
++
+ struct SBarrier {
+     uint32_t id = 0;
+     int      x1 = 0;
+@@ -41,6 +48,9 @@ class CInputCapturePortal {
+         uint32_t                               capabilities = 0;
+         int32_t                                eisFD        = -1;
+         bool                                   dead         = false;
++        SessionState                           state        = SESSION_STATE_INIT;
++        bool                                   clipboardRequested = false;
++        bool                                   clipboardEnabled   = false;
+         std::unordered_map<uint32_t, uint32_t> barrierIdMap;
+ 
+         //
+@@ -59,6 +69,10 @@ class CInputCapturePortal {
+     //
+     dbUasv        onCreateSession(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
+                                   std::unordered_map<std::string, sdbus::Variant> options);
++    dbUasv        onCreateSession2(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
++                                   std::unordered_map<std::string, sdbus::Variant> options);
++    dbUasv        onStart(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
++                          std::unordered_map<std::string, sdbus::Variant> options);
+     dbUasv        onGetZones(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::unordered_map<std::string, sdbus::Variant> opts);
+     dbUasv        onSetPointerBarriers(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::unordered_map<std::string, sdbus::Variant> opts,
+                                        std::vector<std::unordered_map<std::string, sdbus::Variant>> barriers, uint32_t zoneSet);
+@@ -67,6 +81,9 @@ class CInputCapturePortal {
+     dbUasv        onRelease(sdbus::ObjectPath sessionHandle, std::string appID, std::unordered_map<std::string, sdbus::Variant> opts);
+     sdbus::UnixFd onConnectToEIS(sdbus::ObjectPath sessionHandle, std::string appID, std::unordered_map<std::string, sdbus::Variant> opts);
+ 
++    dbUasv        doCreateSession(sdbus::ObjectPath requestHandle, sdbus::ObjectPath sessionHandle, std::string appID, std::string parentWindow,
++                                  std::unordered_map<std::string, sdbus::Variant> options, bool startImmediately);
++
+     bool          sessionValid(sdbus::ObjectPath sessionHandle);
+     void          removeSession(sdbus::ObjectPath sessionHandle);
+ 
+-- 
+2.55.0
+
