@@ -1,0 +1,34 @@
+From 883c307c4b6efe65e61c120ac3f73ba072620246 Mon Sep 17 00:00:00 2001
+From: Michele Baldessari <mbaldess@redhat.com>
+Date: Mon, 14 Sep 2026 19:40:59 +0200
+Subject: [PATCH 4/6] Fix paste deadlock
+
+---
+ src/portals/InputCapture.cpp | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/src/portals/InputCapture.cpp b/src/portals/InputCapture.cpp
+index 6c65c10..af3fb89 100644
+--- a/src/portals/InputCapture.cpp
++++ b/src/portals/InputCapture.cpp
+@@ -721,8 +721,16 @@ void CInputCapturePortal::onSelectionChanged(SP<CCZwlrDataControlOfferV1> offer)
+ 
+     Debug::log(LOG, "[clipboard] selection changed, {} mime types, session_is_owner: {}", m_currentOfferMimeTypes.size(), isOwn);
+ 
+-    if (isOwn)
++    if (isOwn) {
++        m_currentOffer.reset();
++        m_currentOfferMimeTypes.clear();
++
++        std::unordered_map<std::string, sdbus::Variant> ownOpts;
++        ownOpts["mime_types"]       = sdbus::Variant{std::vector<std::string>{}};
++        ownOpts["session_is_owner"] = sdbus::Variant{true};
++        m_pObject->emitSignal("SelectionOwnerChanged").onInterface(CLIPBOARD_INTERFACE_NAME).withArguments(session->sessionHandle, ownOpts);
+         return;
++    }
+ 
+     std::vector<std::string> mimes = m_currentOfferMimeTypes;
+ 
+-- 
+2.55.0
+

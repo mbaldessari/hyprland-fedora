@@ -1,0 +1,32 @@
+From 282b687ef659bc281ae5485b3784a2b2067e2aaa Mon Sep 17 00:00:00 2001
+From: Michele Baldessari <mbaldess@redhat.com>
+Date: Mon, 14 Sep 2026 20:58:32 +0200
+Subject: [PATCH 6/6] fix fd
+
+---
+ src/portals/InputCapture.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/portals/InputCapture.cpp b/src/portals/InputCapture.cpp
+index 9455f9b..be51989 100644
+--- a/src/portals/InputCapture.cpp
++++ b/src/portals/InputCapture.cpp
+@@ -886,7 +886,7 @@ sdbus::UnixFd CInputCapturePortal::onSelectionWrite(sdbus::ObjectPath sessionHan
+         close(compFd);
+     }).detach();
+ 
+-    return sdbus::UnixFd{writeEnd};
++    return sdbus::UnixFd{writeEnd, sdbus::adopt_fd};
+ }
+ 
+ void CInputCapturePortal::onSelectionWriteDone(sdbus::ObjectPath sessionHandle, uint32_t serial, bool success) {
+@@ -928,5 +928,5 @@ sdbus::UnixFd CInputCapturePortal::onSelectionRead(sdbus::ObjectPath sessionHand
+     close(writeEnd);
+     wl_display_flush(g_pPortalManager->m_sWaylandConnection.display);
+ 
+-    return sdbus::UnixFd{readEnd};
++    return sdbus::UnixFd{readEnd, sdbus::adopt_fd};
+ }
+-- 
+2.55.0
+

@@ -1,7 +1,7 @@
-From 51c8b3040d17480d96cd939f09bb2ea6ae112622 Mon Sep 17 00:00:00 2001
+From 49c1035ef3bf33d0d316612385656ae161b45bcd Mon Sep 17 00:00:00 2001
 From: Michele Baldessari <mbaldess@redhat.com>
 Date: Mon, 14 Sep 2026 16:54:29 +0200
-Subject: [PATCH 3/3] feat: implement org.freedesktop.impl.portal.Clipboard
+Subject: [PATCH 3/6] feat: implement org.freedesktop.impl.portal.Clipboard
  interface
 
 Add clipboard support for InputCapture sessions using the wlr-data-control
@@ -39,9 +39,9 @@ so xdg-desktop-portal knows to route clipboard operations through this
 backend.
 ---
  hyprland.portal              |   2 +-
- src/portals/InputCapture.cpp | 296 ++++++++++++++++++++++++++++++++++-
- src/portals/InputCapture.hpp |  36 ++++-
- 3 files changed, 327 insertions(+), 7 deletions(-)
+ src/portals/InputCapture.cpp | 303 ++++++++++++++++++++++++++++++++++-
+ src/portals/InputCapture.hpp |  37 ++++-
+ 3 files changed, 335 insertions(+), 7 deletions(-)
 
 diff --git a/hyprland.portal b/hyprland.portal
 index cbaafa8..2433957 100644
@@ -54,7 +54,7 @@ index cbaafa8..2433957 100644
 +Interfaces=org.freedesktop.impl.portal.Screenshot;org.freedesktop.impl.portal.ScreenCast;org.freedesktop.impl.portal.GlobalShortcuts;org.freedesktop.impl.portal.InputCapture;org.freedesktop.impl.portal.Clipboard;
  UseIn=wlroots;Hyprland;sway;Wayfire;river;
 diff --git a/src/portals/InputCapture.cpp b/src/portals/InputCapture.cpp
-index dadf9a3..d3215de 100644
+index dadf9a3..6c65c10 100644
 --- a/src/portals/InputCapture.cpp
 +++ b/src/portals/InputCapture.cpp
 @@ -16,11 +16,14 @@
@@ -170,7 +170,7 @@ index dadf9a3..d3215de 100644
      results["clipboard_enabled"] = sdbus::Variant{session->clipboardEnabled};
      return {0, results};
  }
-@@ -609,3 +660,238 @@ void CInputCapturePortal::disable(sdbus::ObjectPath sessionHandle) {
+@@ -609,3 +660,245 @@ void CInputCapturePortal::disable(sdbus::ObjectPath sessionHandle) {
      std::unordered_map<std::string, sdbus::Variant> options;
      m_pObject->emitSignal("Disabled").onInterface(INTERFACE_NAME).withArguments(sessionHandle, options);
  }
@@ -230,7 +230,13 @@ index dadf9a3..d3215de 100644
 +    if (!session)
 +        return;
 +
-+    Debug::log(LOG, "[clipboard] local selection changed, {} mime types", m_currentOfferMimeTypes.size());
++    bool isOwn = m_ownSelectionPending;
++    m_ownSelectionPending = false;
++
++    Debug::log(LOG, "[clipboard] selection changed, {} mime types, session_is_owner: {}", m_currentOfferMimeTypes.size(), isOwn);
++
++    if (isOwn)
++        return;
 +
 +    std::vector<std::string> mimes = m_currentOfferMimeTypes;
 +
@@ -318,6 +324,7 @@ index dadf9a3..d3215de 100644
 +            m_sessions[sessionHandle]->dataSource.reset();
 +    });
 +
++    m_ownSelectionPending = true;
 +    m_dataDevice->sendSetSelection(session->dataSource.get());
 +    wl_display_flush(g_pPortalManager->m_sWaylandConnection.display);
 +}
@@ -410,7 +417,7 @@ index dadf9a3..d3215de 100644
 +    return sdbus::UnixFd{readEnd};
 +}
 diff --git a/src/portals/InputCapture.hpp b/src/portals/InputCapture.hpp
-index b5ac90e..a3a9eba 100644
+index b5ac90e..07a7ac6 100644
 --- a/src/portals/InputCapture.hpp
 +++ b/src/portals/InputCapture.hpp
 @@ -1,9 +1,12 @@
@@ -445,7 +452,7 @@ index b5ac90e..a3a9eba 100644
          //
          std::unique_ptr<SDBusRequest>             request;
          std::unique_ptr<SDBusSession>             session;
-@@ -66,10 +81,29 @@ class CInputCapturePortal {
+@@ -66,10 +81,30 @@ class CInputCapturePortal {
      uint                            m_lastZoneSet      = 1;
      uint32_t                        m_barrierIdCounter = 1;
  
@@ -453,6 +460,7 @@ index b5ac90e..a3a9eba 100644
 +    SP<CCZwlrDataControlDeviceV1> m_dataDevice;
 +    SP<CCZwlrDataControlOfferV1>  m_currentOffer;
 +    std::vector<std::string>      m_currentOfferMimeTypes;
++    bool                          m_ownSelectionPending = false;
 +
 +    void initDataControl();
 +    void onSelectionChanged(SP<CCZwlrDataControlOfferV1> offer);

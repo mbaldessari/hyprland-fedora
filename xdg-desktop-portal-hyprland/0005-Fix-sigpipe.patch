@@ -1,0 +1,84 @@
+From 2fa19a7d2db3e221365a72e142b702aba64e6992 Mon Sep 17 00:00:00 2001
+From: Michele Baldessari <mbaldess@redhat.com>
+Date: Mon, 14 Sep 2026 20:33:16 +0200
+Subject: [PATCH 5/6] Fix sigpipe
+
+---
+ src/main.cpp                 |  3 +++
+ src/portals/InputCapture.cpp | 24 ++++++++++++++++++++++--
+ 2 files changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/src/main.cpp b/src/main.cpp
+index e5c3ed3..d44f553 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -1,4 +1,5 @@
+ #include <sdbus-c++/sdbus-c++.h>
++#include <csignal>
+ 
+ #include "helpers/Log.hpp"
+ #include "core/PortalManager.hpp"
+@@ -37,6 +38,8 @@ int main(int argc, char** argv, char** envp) {
+         }
+     }
+ 
++    signal(SIGPIPE, SIG_IGN);
++
+     Debug::log(LOG, "Initializing xdph...");
+ 
+     g_pPortalManager->init();
+diff --git a/src/portals/InputCapture.cpp b/src/portals/InputCapture.cpp
+index af3fb89..9455f9b 100644
+--- a/src/portals/InputCapture.cpp
++++ b/src/portals/InputCapture.cpp
+@@ -790,6 +790,14 @@ void CInputCapturePortal::onSetSelection(sdbus::ObjectPath sessionHandle, std::u
+ 
+     Debug::log(LOG, "[clipboard] SetSelection: {} mime types", mimeTypes.size());
+ 
++    for (auto& [serial, pt] : session->pendingTransfers) {
++        if (pt.compositorFd >= 0) {
++            Debug::log(WARN, "[clipboard] SetSelection: closing leaked compositor fd for serial {}", serial);
++            close(pt.compositorFd);
++        }
++    }
++    session->pendingTransfers.clear();
++
+     session->dataSource = makeShared<CCZwlrDataControlSourceV1>(wl.dataControlMgr->sendCreateDataSource());
+     session->remoteMimeTypes = mimeTypes;
+ 
+@@ -850,18 +858,30 @@ sdbus::UnixFd CInputCapturePortal::onSelectionWrite(sdbus::ObjectPath sessionHan
+     // Detach the compositor fd from the pending map — it's now owned by the forwarding thread
+     it->second.compositorFd = -1;
+ 
+-    std::thread([readEnd, compFd]() {
++    std::thread([readEnd, compFd, serial]() {
+         char buf[4096];
+         ssize_t n;
++        ssize_t totalRead = 0, totalWritten = 0;
++        bool writeError = false;
+         while ((n = read(readEnd, buf, sizeof(buf))) > 0) {
++            totalRead += n;
+             ssize_t written = 0;
+             while (written < n) {
+                 ssize_t w = write(compFd, buf + written, n - written);
+-                if (w <= 0)
++                if (w <= 0) {
++                    writeError = true;
++                    Debug::log(WARN, "[clipboard] forward thread serial {}: write failed, errno={}", serial, errno);
+                     break;
++                }
+                 written += w;
+             }
++            totalWritten += written;
++            if (writeError)
++                break;
+         }
++        if (n < 0)
++            Debug::log(WARN, "[clipboard] forward thread serial {}: read failed, errno={}", serial, errno);
++        Debug::log(LOG, "[clipboard] forward thread serial {}: done, read={} written={}", serial, totalRead, totalWritten);
+         close(readEnd);
+         close(compFd);
+     }).detach();
+-- 
+2.55.0
+

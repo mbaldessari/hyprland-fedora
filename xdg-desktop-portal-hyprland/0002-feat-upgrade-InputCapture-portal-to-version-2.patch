@@ -1,7 +1,7 @@
 From 820fb5ce48600273ae84a8d8717cd574d1c886d6 Mon Sep 17 00:00:00 2001
 From: Michele Baldessari <mbaldess@redhat.com>
 Date: Mon, 14 Sep 2026 16:46:35 +0200
-Subject: [PATCH 2/3] feat: upgrade InputCapture portal to version 2
+Subject: [PATCH 2/6] feat: upgrade InputCapture portal to version 2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
