@@ -1,7 +1,7 @@
 From 883c307c4b6efe65e61c120ac3f73ba072620246 Mon Sep 17 00:00:00 2001
 From: Michele Baldessari <mbaldess@redhat.com>
 Date: Mon, 14 Sep 2026 19:40:59 +0200
-Subject: [PATCH 4/6] Fix paste deadlock
+Subject: [PATCH 4/7] Fix paste deadlock
 
 ---
  src/portals/InputCapture.cpp | 10 +++++++++-

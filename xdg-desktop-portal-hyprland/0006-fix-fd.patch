@@ -1,7 +1,7 @@
 From 282b687ef659bc281ae5485b3784a2b2067e2aaa Mon Sep 17 00:00:00 2001
 From: Michele Baldessari <mbaldess@redhat.com>
 Date: Mon, 14 Sep 2026 20:58:32 +0200
-Subject: [PATCH 6/6] fix fd
+Subject: [PATCH 6/7] fix fd
 
 ---
  src/portals/InputCapture.cpp | 4 ++--

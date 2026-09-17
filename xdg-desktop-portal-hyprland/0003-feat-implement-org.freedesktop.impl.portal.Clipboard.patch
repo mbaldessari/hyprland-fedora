@@ -1,7 +1,7 @@
 From 49c1035ef3bf33d0d316612385656ae161b45bcd Mon Sep 17 00:00:00 2001
 From: Michele Baldessari <mbaldess@redhat.com>
 Date: Mon, 14 Sep 2026 16:54:29 +0200
-Subject: [PATCH 3/6] feat: implement org.freedesktop.impl.portal.Clipboard
+Subject: [PATCH 3/7] feat: implement org.freedesktop.impl.portal.Clipboard
  interface
 
 Add clipboard support for InputCapture sessions using the wlr-data-control

@@ -1,7 +1,7 @@
 From 2fa19a7d2db3e221365a72e142b702aba64e6992 Mon Sep 17 00:00:00 2001
 From: Michele Baldessari <mbaldess@redhat.com>
 Date: Mon, 14 Sep 2026 20:33:16 +0200
-Subject: [PATCH 5/6] Fix sigpipe
+Subject: [PATCH 5/7] Fix sigpipe
 
 ---
  src/main.cpp                 |  3 +++
