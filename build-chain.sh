@@ -122,6 +122,7 @@ FAILED=()
 CHAIN_START=$(date +%s)
 
 for pkg in "${BUILD_ORDER[@]}"; do
+    BUILT=$((BUILT + 1))
     # Skip until we reach the start-from package
     if $SKIPPING; then
         if [[ "$pkg" == "$START_FROM" ]]; then
@@ -132,7 +133,6 @@ for pkg in "${BUILD_ORDER[@]}"; do
         fi
     fi
 
-    BUILT=$((BUILT + 1))
     SPEC_DIR="${SCRIPT_DIR}/${pkg}"
     SPEC_FILE="${SPEC_DIR}/${pkg}.spec"
 
