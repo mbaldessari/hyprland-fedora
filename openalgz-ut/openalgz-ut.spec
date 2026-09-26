@@ -6,7 +6,7 @@ Release:        %autorelease
 Summary:        A simple and fast compiling C++23 unit test library
 
 License:        MIT
-URL:            https://github.com/openalgz/ut
+URL:            https://github.com/stephenberry/ut
 Source:         %{url}/archive/v%{version}/ut-%{version}.tar.gz
 
 BuildRequires:  cmake

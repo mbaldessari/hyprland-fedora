@@ -109,4 +109,5 @@ for specfile in "$SCRIPT_DIR"/*//*.spec; do
     # Skip _review directory
     [[ "$dir" == *"_review"* ]] && continue
     check_package "$specfile"
+    sleep 2
 done
