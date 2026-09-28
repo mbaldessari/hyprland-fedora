@@ -1,0 +1,47 @@
+From 4d9a47ce752b4450cfa195fbf87e0b960fd26be0 Mon Sep 17 00:00:00 2001
+From: Michele Baldessari <mbaldess@redhat.com>
+Date: Thu, 17 Sep 2026 11:29:38 +0200
+Subject: [PATCH 7/7] Fix InputCapture session cleanup on client disconnect
+
+v2 sessions (CreateSession2) registered a DBus request object at the
+root path "/" which was never unregistered when the session was destroyed.
+When a new client connected, the second registration at "/" failed with
+"File exists". Additionally, dead sessions were never removed from the
+session map since removeSession() was defined but never called.
+
+Skip DBus request registration for v2 sessions (no real request handle),
+clean up the request object in onDestroy, and remove dead sessions from
+the map.
+---
+ src/portals/InputCapture.cpp | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/src/portals/InputCapture.cpp b/src/portals/InputCapture.cpp
+index be51989..5d751cf 100644
+--- a/src/portals/InputCapture.cpp
++++ b/src/portals/InputCapture.cpp
+@@ -379,12 +379,19 @@ CInputCapturePortal::SSession::SSession(sdbus::ObjectPath requestHandle_, sdbus:
+         whandle->sendDisable();
+         Debug::log(LOG, "[input-capture] Session {} destroyed", sessionHandle.c_str());
+         session.release();
++        if (request) {
++            request->object.reset();
++            request.reset();
++        }
+         whandle.reset();
+         dead = true;
++        g_pPortalManager->m_sPortals.inputCapture->removeSession(sessionHandle);
+     };
+ 
+-    request            = createDBusRequest(requestHandle);
+-    request->onDestroy = [this]() { request.release(); };
++    if (requestHandle != sdbus::ObjectPath{"/"}) {
++        request            = createDBusRequest(requestHandle);
++        request->onDestroy = [this]() { request.release(); };
++    }
+ 
+     whandle->setActivated([this](CCHyprlandInputCaptureV1*, uint32_t activationId, wl_fixed_t x, wl_fixed_t y, uint32_t borderId) {
+         g_pPortalManager->m_sPortals.inputCapture->activate(sessionHandle, activationId, x, y, borderId);
+-- 
+2.55.0
+
