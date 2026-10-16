@@ -1,5 +1,5 @@
 Name:           hyprland-protocols
-Version:        0.7.1
+Version:        0.8.0
 Release:        %autorelease
 Summary:        Wayland protocol extensions for Hyprland
 BuildArch:      noarch
@@ -9,6 +9,7 @@ URL:            https://github.com/hyprwm/hyprland-protocols
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  cmake
+BuildRequires:  gcc
 
 %description
 Wayland protocol extensions for Hyprland. These protocols bridge the gap
