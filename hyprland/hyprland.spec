@@ -34,7 +34,8 @@ Source9:        README.Fedora
 
 # Drop glaze version ceiling so system glaze 8.x is accepted
 # https://github.com/hyprwm/Hyprland/commit/91f29f2
-Patch0:         glaze-8.patch
+#Patch0:         glaze-8.patch
+Patch0:         cmakefile-systemd.patch
 
 %{lua:
 hyprdeps = {
@@ -58,6 +59,7 @@ hyprdeps = {
     "pkgconfig(hyprwayland-scanner)",
     "pkgconfig(hyprwire)",
     "pkgconfig(lcms2)",
+    "pkgconfig(libcanberra)",
     "pkgconfig(libdisplay-info)",
     "pkgconfig(libdrm)",
     "pkgconfig(libeis-1.0)",
@@ -72,6 +74,7 @@ hyprdeps = {
     "pkgconfig(pixman-1)",
     "pkgconfig(re2)",
     "pkgconfig(readline)",
+    "pkgconfig(sdbus-c++)",
     "pkgconfig(systemd)",
     "pkgconfig(tomlplusplus)",
     "pkgconfig(uuid)",

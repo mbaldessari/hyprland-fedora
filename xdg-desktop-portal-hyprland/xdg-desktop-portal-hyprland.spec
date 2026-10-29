@@ -11,13 +11,13 @@ License:        BSD-3-Clause AND HPND-sell-variant AND MIT
 URL:            https://github.com/hyprwm/xdg-desktop-portal-hyprland
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 Source1:        hyprland-share-picker.1
-Patch0:         0001-feat-add-wlr-data-control-protocol-binding-and-wl_se.patch
-Patch1:         0002-feat-upgrade-InputCapture-portal-to-version-2.patch
-Patch3:         0003-feat-implement-org.freedesktop.impl.portal.Clipboard.patch
-Patch4:         0004-Fix-paste-deadlock.patch
-Patch5:         0005-Fix-sigpipe.patch
-Patch6:         0006-fix-fd.patch
-Patch7:         0007-Fix-InputCapture-session-cleanup-on-client-disconnec.patch
+#Patch0:         0001-feat-add-wlr-data-control-protocol-binding-and-wl_se.patch
+#Patch1:         0002-feat-upgrade-InputCapture-portal-to-version-2.patch
+#Patch3:         0003-feat-implement-org.freedesktop.impl.portal.Clipboard.patch
+#Patch4:         0004-Fix-paste-deadlock.patch
+#Patch5:         0005-Fix-sigpipe.patch
+#Patch6:         0006-fix-fd.patch
+#Patch7:         0007-Fix-InputCapture-session-cleanup-on-client-disconnec.patch
 
 BuildRequires:  meson
 BuildRequires:  gcc-c++
@@ -27,6 +27,7 @@ BuildRequires:  pkgconfig(gbm)
 BuildRequires:  pkgconfig(hyprland-protocols)
 BuildRequires:  pkgconfig(hyprlang)
 BuildRequires:  pkgconfig(hyprutils)
+BuildRequires:  pkgconfig(hyprtoolkit)
 BuildRequires:  pkgconfig(hyprwayland-scanner)
 BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(libpipewire-0.3)

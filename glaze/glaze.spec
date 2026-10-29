@@ -1,7 +1,7 @@
 %global debug_package %{nil}
 
 Name:           glaze
-Version:        9.0.0
+Version:        9.1.0
 Release:        %autorelease
 Summary:        Extremely fast, in memory, JSON and interface library
 
@@ -12,7 +12,7 @@ URL:            https://github.com/stephenberry/glaze
 Source:         %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 # Use system ut and Eigen3 instead of FetchContent
-Patch0:         glaze-use-system-deps.patch
+#Patch0:         glaze-use-system-deps.patch
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++

@@ -1,0 +1,18 @@
+diff -up hyprland-source/CMakeLists.txt.orig hyprland-source/CMakeLists.txt
+--- hyprland-source/CMakeLists.txt.orig	2026-10-29 21:50:29.866373981 +0100
++++ hyprland-source/CMakeLists.txt	2026-10-29 21:51:37.182521284 +0100
+@@ -419,8 +419,13 @@ else()
+   message(STATUS "SYSTEMD support is requested (NO_SYSTEMD not defined)...")
+   add_compile_definitions(USES_SYSTEMD)
+ 
++  pkg_get_variable(SYSTEMD_USER_UNIT_DIR systemd systemduserunitdir)
++  if(NOT SYSTEMD_USER_UNIT_DIR)
++      set(SYSTEMD_USER_UNIT_DIR "lib/systemd/user" CACHE PATH "systemd user unit directory")
++  endif()
++
+   install(FILES ${CMAKE_SOURCE_DIR}/systemd/hyprland-session.target
+-          DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/user)
++          DESTINATION "${SYSTEMD_USER_UNIT_DIR}")
+ 
+   # session file -uwsm
+   if(NO_UWSM)

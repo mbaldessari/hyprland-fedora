@@ -12,8 +12,8 @@ BUILD_ORDER=(
     hypridle
     hyprsunset
     hyprlock
-    xdg-desktop-portal-hyprland
     hyprtoolkit
+    xdg-desktop-portal-hyprland
     hyprpaper
     hyprland-guiutils
     hyprland
