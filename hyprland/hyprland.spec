@@ -27,8 +27,8 @@ Source0:        %{url}/releases/download/v%{version}/source-v%{version}.tar.gz
 Source4:        macros.hyprland
 Source5:        hyprpm.1
 Source6:        start-hyprland.1
-# systemd session integration (activates graphical-session.target)
-Source7:        hyprland-session.target
+# systemd session integration (activates graphical-session.target) is included since 0.57.0
+#Source7:        hyprland-session.target
 Source8:        hyprland-session-shutdown.target
 Source9:        README.Fedora
 
@@ -202,8 +202,8 @@ install -Dpm644 %{SOURCE4} -t %{buildroot}%{_rpmconfigdir}/macros.d
 install -Dpm644 %{SOURCE5} %{SOURCE6} -t %{buildroot}%{_mandir}/man1
 ln -s Hyprland.1 %{buildroot}%{_mandir}/man1/hyprland.1
 
-# systemd session integration
-install -Dpm644 %{SOURCE7} %{SOURCE8} -t %{buildroot}%{_userunitdir}
+# systemd session integration. Seems %{SOURCE7} is now included in 0.57.0
+install -Dpm644 %{SOURCE8} -t %{buildroot}%{_userunitdir}
 
 # Install Fedora-specific documentation
 install -Dpm644 %{SOURCE9} -t %{buildroot}%{_pkgdocdir}
