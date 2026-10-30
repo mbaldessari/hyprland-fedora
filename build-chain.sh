@@ -20,7 +20,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 #MOCK_CONFIG="fedora-$(rpm --eval '%{fedora}')-$(uname -m)"
-MOCK_CONFIG="fedora-44-x86_64"
+MOCK_CONFIG="fedora-45-x86_64"
 RESULT_DIR="${SCRIPT_DIR}/_results"
 START_FROM=""
 STOP_ON_ERROR=false
