@@ -1,5 +1,5 @@
 Name:           hyprcursor
-Version:        0.1.13
+Version:        0.1.14
 Release:        %autorelease -b2
 Summary:        The Hyprland cursor format, library and utilities
 
